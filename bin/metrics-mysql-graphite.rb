@@ -30,7 +30,6 @@
 #   password="abcd1234"
 #
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-plugin/metric/cli'
 require 'mysql2'
 require 'socket'
@@ -255,7 +254,6 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
       rescue => e
         puts e.message
       end
-
     end
 
     ok

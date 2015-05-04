@@ -19,7 +19,6 @@
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-handler'
 require 'json'
 require 'mysql'
@@ -43,10 +42,10 @@ class MysqlMetric < Sensu::Handler
 
     begin
       con = Mysql.new mysql_hostname, mysql_username, mysql_password
-      con.query("INSERT INTO "\
-                "sensumetrics.sensu_historic_metrics("\
-                "client_id, check_name, issue_time, "\
-                "output, status) "\
+      con.query('INSERT INTO '\
+                'sensumetrics.sensu_historic_metrics('\
+                'client_id, check_name, issue_time, '\
+                'output, status) '\
                 "VALUES ('#{client_id}', '#{check_name}', "\
                 "#{check_issued}, '#{check_output}', #{check_status})")
     rescue Mysql::Error => e

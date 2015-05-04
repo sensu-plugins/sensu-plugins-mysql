@@ -55,7 +55,6 @@ aws_debug = false
 
 options = {}
 optparse = OptionParser.new do|opts|
-
   opts.on('-h', '--help', '') do
     puts opts
     exit
@@ -80,7 +79,6 @@ optparse = OptionParser.new do|opts|
   opts.on('-l', '--lessthan', 'Threshold is less than') do|lessthan|
     options[:lessthan] = lessthan
   end
-
 end
 begin
   optparse.parse!
@@ -146,14 +144,14 @@ if options[:lessthan] == true
   else
     puts "OK: #{options[:host]} statistic #{options[:stat]} is #{average} #{unit}"
   end
+else
+  if average.to_f > options[:crit].to_f
+    puts "CRITICAL: #{options[:host]} statistic #{options[:stat]} is at #{average} #{unit} which is above threshold #{options[:crit]} #{unit}"
+    exit 1
+  elsif average.to_f > options[:warn].to_f
+    puts "WARNING: #{options[:host]} statistic #{options[:stat]} is at #{average} #{unit} which is above threshold #{options[:warn]} #{unit}"
+    exit 2
   else
-    if average.to_f > options[:crit].to_f
-      puts "CRITICAL: #{options[:host]} statistic #{options[:stat]} is at #{average} #{unit} which is above threshold #{options[:crit]} #{unit}"
-      exit 1
-    elsif average.to_f > options[:warn].to_f
-      puts "WARNING: #{options[:host]} statistic #{options[:stat]} is at #{average} #{unit} which is above threshold #{options[:warn]} #{unit}"
-      exit 2
-    else
-      puts "OK: #{options[:host]} statistic #{options[:stat]} is #{average} #{unit}"
-    end
+    puts "OK: #{options[:host]} statistic #{options[:stat]} is #{average} #{unit}"
+  end
 end

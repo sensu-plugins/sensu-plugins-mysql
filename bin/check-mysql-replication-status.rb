@@ -23,7 +23,6 @@
 #   password="abcd1234"
 #
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-plugin/check/cli'
 require 'mysql'
 require 'inifile'
@@ -134,14 +133,13 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
           message = "replication delayed by #{replication_delay}"
 
           if replication_delay > config[:warn] &&
-              replication_delay <= config[:crit]
+             replication_delay <= config[:crit]
             warning message
           elsif replication_delay >= config[:crit]
             critical message
           else
             ok "slave running: #{slave_running}, #{message}"
           end
-
         end
         ok 'show slave status was nil. This server is not a slave.'
       end

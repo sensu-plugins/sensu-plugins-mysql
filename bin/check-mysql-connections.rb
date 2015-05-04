@@ -64,15 +64,15 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
   def run
     db = Mysql.real_connect(config[:hostname], config[:user], config[:password], config[:database], config[:port].to_i, config[:socket])
     max_con = db
-        .query("SHOW VARIABLES LIKE 'max_connections'")
-        .fetch_hash
-        .fetch('Value')
-        .to_i
+              .query("SHOW VARIABLES LIKE 'max_connections'")
+              .fetch_hash
+              .fetch('Value')
+              .to_i
     used_con = db
-        .query("SHOW GLOBAL STATUS LIKE 'Threads_connected'")
-        .fetch_hash
-        .fetch('Value')
-        .to_i
+               .query("SHOW GLOBAL STATUS LIKE 'Threads_connected'")
+               .fetch_hash
+               .fetch('Value')
+               .to_i
     if config[:usepc]
       pc = used_con.fdiv(max_con) * 100
       critical "Max connections reached in MySQL: #{used_con} out of #{max_con}" if pc >= config[:maxcrit].to_i
