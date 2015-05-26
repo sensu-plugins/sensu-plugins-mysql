@@ -14,7 +14,7 @@
 #
 # DEPENDENCIES:
 #   gem: sensu-plugin
-#   gem: <?>
+#   gem: aws
 #
 # USAGE:
 #   example commands
