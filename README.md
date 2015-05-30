@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/sensu-plugins/sensu-plugins-mysql/badges/gpa.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-mysql)
 [![Test Coverage](https://codeclimate.com/github/sensu-plugins/sensu-plugins-mysql/badges/coverage.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-mysql)
 [![Dependency Status](https://gemnasium.com/sensu-plugins/sensu-plugins-mysql.svg)](https://gemnasium.com/sensu-plugins/sensu-plugins-mysql)
-[ ![Codeship Status for sensu-plugins/sensu-plugins-mysql](https://codeship.com/projects/266116c0-e896-0132-af9a-62885e5c211b/status?branch=master)](https://codeship.com/projects/82837)
+[![Codeship Status for sensu-plugins/sensu-plugins-mysql](https://codeship.com/projects/266116c0-e896-0132-af9a-62885e5c211b/status?branch=master)](https://codeship.com/projects/82837)
 
 ## Functionality
 
