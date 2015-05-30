@@ -36,6 +36,5 @@
 
 [Installation and Setup](https://github.com/sensu-plugins/documentation/blob/master/user_docs/installation_instructions.md)
 
-
 ## Notes
 
