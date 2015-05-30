@@ -12,23 +12,30 @@ end
 pvt_key = '~/.ssh/gem-private_key.pem'
 
 Gem::Specification.new do |s|
-  s.name                   = 'sensu-plugins-mysql'
-  s.version                = SensuPluginsMysql::VERSION
-  s.authors                = ['Sensu Plugins and contributors']
-  s.email                  = '<sensu-users@googlegroups.com>'
-  s.homepage               = 'https://github.com/sensu-plugins/sensu-plugins-mysql'
-  s.summary                = ''
-  s.description            = ''
-  s.license                = 'MIT'
-  s.date                   = Date.today.to_s
-  s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
-  s.executables            = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  s.test_files             = s.files.grep(%r{^(test|spec|features)/})
-  s.require_paths          = ['lib']
+  s.authors                = ['Sensu-Plugins and contributors']
   s.cert_chain             = ['certs/sensu-plugins.pem']
-  s.signing_key            = File.expand_path(pvt_key) if $PROGRAM_NAME =~ /gem\z/
+  s.date                   = Date.today.to_s
+  s.description            = 'Sensu plugins for MySql'
+  s.email                  = '<sensu-users@googlegroups.com>'
+  s.executables            = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
+  s.homepage               = 'https://github.com/sensu-plugins/sensu-plugins-mysql'
+  s.license                = 'MIT'
+  s.metadata               = { 'maintainer'         => '',
+                               'development_status' => 'active',
+                               'production_status'  => 'unstable - testing recommended',
+                               'release_draft'      => 'false',
+                               'release_prerelease' => 'false'
+  }
+  s.name                   = 'sensu-plugins-mysql'
   s.platform               = Gem::Platform::RUBY
+  s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
+  s.require_paths          = ['lib']
   s.required_ruby_version  = '>= 1.9.3'
+  s.signing_key            = File.expand_path(pvt_key) if $PROGRAM_NAME =~ /gem\z/
+  s.summary                = 'Sensu plugins for MySql'
+  s.test_files             = s.files.grep(%r{^(test|spec|features)/})
+  s.version                = SensuPluginsMySql::Version::VER_STRING
 
   s.add_runtime_dependency 'sensu-plugin', '1.1.0'
   s.add_runtime_dependency 'inifile', '3.0.0'
