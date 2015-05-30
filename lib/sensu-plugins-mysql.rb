@@ -1,1 +1,1 @@
-require 'sensu-plugins-MySql/version'
+require 'sensu-plugins-mysql/version'
