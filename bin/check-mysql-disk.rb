@@ -12,6 +12,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'mysql'
+require 'inifile'
 
 class CheckMysqlDisk < Sensu::Plugin::Check::CLI
   option :host,
@@ -28,6 +29,11 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          short: '-p',
          long: '--password=VALUE',
          description: 'Database password'
+
+  option :ini,
+         description: 'My.cnf ini file',
+         short: '-i',
+         long: '--ini VALUE'
 
   option :size,
          short: '-s',
@@ -56,9 +62,16 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          exit: 0
 
   def run
+    if config[:ini]
+      ini = IniFile.load(config[:ini])
+      section = ini['client']
+      db_user = section['user']
+      db_pass = section['password']
+    else
+      db_user = config[:user]
+      db_pass = config[:pass]
+    end
     db_host = config[:host]
-    db_user = config[:user]
-    db_pass = config[:pass]
     disk_size = config[:size].to_f
     critical_usage = config[:crit].to_f
     warning_usage = config[:warn].to_f

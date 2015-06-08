@@ -12,6 +12,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'mysql'
+require 'inifile'
 
 class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
   option :user,
@@ -23,8 +24,12 @@ class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
   option :password,
          description: 'MySQL Password',
          short: '-p PASS',
-         long: '--password PASS',
-         required: true
+         long: '--password PASS'
+
+  option :ini,
+         description: 'My.cnf ini file',
+         short: '-i',
+         long: '--ini VALUE'
 
   option :hostname,
          description: 'Hostname to login to',
@@ -56,7 +61,16 @@ class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
          default: 10
 
   def run
-    db = Mysql.new(config[:hostname], config[:user], config[:password], config[:database], config[:port].to_i, config[:socket])
+    if config[:ini]
+      ini = IniFile.load(config[:ini])
+      section = ini['client']
+      db_user = section['user']
+      db_pass = section['password']
+    else
+      db_user = config[:user]
+      db_pass = config[:password]
+    end
+    db = Mysql.new(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
 
     warn = config[:warn].to_i
     crit = config[:crit].to_i
