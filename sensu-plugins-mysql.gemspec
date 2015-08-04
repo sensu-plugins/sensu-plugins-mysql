@@ -15,7 +15,11 @@ Gem::Specification.new do |s|
   s.authors                = ['Sensu-Plugins and contributors']
   s.cert_chain             = ['certs/sensu-plugins.pem']
   s.date                   = Date.today.to_s
-  s.description            = 'Sensu plugins for MySql'
+  s.description            = 'This plugin provides native MySQL instrumentation
+                              for monitoring and metrics collection, including:
+                              service health, database connectivity, `InnoDB`
+                              locks, replication status, metrics collection, and
+                              sending metrics to a MySQL database.'
   s.email                  = '<sensu-users@googlegroups.com>'
   s.executables            = Dir.glob('bin/**/*').map { |file| File.basename(file) }
   s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
