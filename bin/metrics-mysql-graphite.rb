@@ -1,4 +1,4 @@
-# !/usr/bin/env ruby
+#!/usr/bin/env ruby
 #
 # Push mysql stats into graphite
 # ===

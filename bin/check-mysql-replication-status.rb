@@ -1,4 +1,4 @@
-# !/usr/bin/env ruby
+#!/usr/bin/env ruby
 #
 # MySQL Replication Status (modded from disk)
 # ===

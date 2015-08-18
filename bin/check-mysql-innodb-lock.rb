@@ -1,4 +1,4 @@
-# !/usr/bin/env ruby
+#!/usr/bin/env ruby
 #
 # MySQL InnoDB Lock Check Plugin
 # ===
