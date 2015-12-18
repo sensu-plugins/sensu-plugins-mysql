@@ -188,6 +188,7 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         'Innodb_rows_inserted' =>             'rowsInserted'
       },
       'configuration' => {
+        'max_connections'         =>          'MaxConnections',
         'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount'
       }
     }
