@@ -15,6 +15,7 @@
  * bin/check-mysql-connections.rb
  * bin/check-mysql-disk.rb
  * bin/check-mysql-innodb-lock.rb
+ * bin/check-mysql-threads.rb
  * bin/metrics-mysql-graphite.rb
  * bin/metrics-mysql.rb
  * bin/mysql-metrics.sql
