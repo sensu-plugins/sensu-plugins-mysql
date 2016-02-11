@@ -1,14 +1,30 @@
 #!/usr/bin/env ruby
 #
-# MySQL Health Plugin
-# ===
+#   check-mysql-threads.rb
 #
-# This plugin evaluates the number of MySQL running threads and warns you according to specified limits
+# DESCRIPTION:
+#   MySQL Threads Health plugin
+#   This plugin evaluates the number of MySQL running threads and warns you according to specified limits
 #
-# Author: Guillaume Lefranc <guillaume@mariadb.com>
+# OUTPUT:
+#   plain text
 #
-# Released under the same terms as Sensu (the MIT license); see LICENSE
-# for details.
+# PLATFORMS:
+#   All
+#
+# DEPENDENCIES:
+#   gem: sensu-plugin
+#
+# USAGE:
+#   check-mysql-threads.rb -w [threshold] -c [threshold]
+#
+# NOTES:
+#
+# LICENSE:
+#   Author: Guillaume Lefranc <guillaume@mariadb.com>
+#   Released under the same terms as Sensu (the MIT license); see LICENSE
+#   for details.
+#
 
 require 'sensu-plugin/check/cli'
 require 'mysql'
