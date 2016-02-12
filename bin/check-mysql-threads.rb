@@ -87,17 +87,13 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
       db_pass = config[:password]
     end
     db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
-    run_thr = db
-               .query("SHOW GLOBAL STATUS LIKE 'Threads_running'")
-               .fetch_hash
-               .fetch('Value')
-               .to_i
+    run_thr = db.query("SHOW GLOBAL STATUS LIKE 'Threads_running'").fetch_hash.fetch('Value').to_i
     critical "MySQL currently running threads: #{run_thr}" if run_thr >= config[:maxcrit].to_i
     warning "MySQL currently running threads: #{run_thr}" if run_thr >= config[:maxwarn].to_i
     ok "Currently running threads are under limit in MySQL: #{run_thr}"
-   rescue Mysql::Error => e
-  critical "MySQL check failed: #{e.error}"
-ensure
-  db.close if db
+  rescue Mysql::Error => e
+    critical "MySQL check failed: #{e.error}"
+  ensure
+    db.close if db
   end
 end
