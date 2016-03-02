@@ -91,15 +91,15 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
       pc = used_con.fdiv(max_con) * 100
       critical "Max connections reached in MySQL: #{used_con} out of #{max_con}" if pc >= config[:maxcrit].to_i
       warning "Max connections reached in MySQL: #{used_con} out of #{max_con}" if pc >= config[:maxwarn].to_i
-      ok "Max connections is under limit in MySQL: #{used_con} out of #{max_con}"
+      ok "Max connections is under limit in MySQL: #{used_con} out of #{max_con}" # rubocop:disable Style/IdenticalConditionalBranches
     else
       critical "Max connections reached in MySQL: #{used_con} out of #{max_con}" if used_con >= config[:maxcrit].to_i
       warning "Max connections reached in MySQL: #{used_con} out of #{max_con}" if used_con >= config[:maxwarn].to_i
-      ok "Max connections is under limit in MySQL: #{used_con} out of #{max_con}"
+      ok "Max connections is under limit in MySQL: #{used_con} out of #{max_con}" # rubocop:disable Style/IdenticalConditionalBranches
     end
-rescue Mysql::Error => e
-  critical "MySQL check failed: #{e.error}"
-ensure
-  db.close if db
+  rescue Mysql::Error => e
+    critical "MySQL check failed: #{e.error}"
+  ensure
+    db.close if db
   end
 end

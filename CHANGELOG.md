@@ -19,14 +19,17 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - ability to read configuration data from an ini file
 
 ## [0.0.2] - 2015-06-03
-
 ### Fixed
 - added binstubs
 
 ### Changed
 - removed cruft from /lib
 
-##[0.0.1] - 2015-05-29
-
+##0.0.1 - 2015-05-29
 ### Added
 - initial release
+
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.4...HEAD
+[0.0.4]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.3...0.0.4
+[0.0.3]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.2...0.0.3
+[0.0.2]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.1...0.0.2

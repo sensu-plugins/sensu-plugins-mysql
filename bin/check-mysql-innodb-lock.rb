@@ -128,7 +128,7 @@ class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
       lock_info.push(h)
     end
 
-    if lock_info.length == 0
+    if lock_info.length == 0 # rubocop:disable Style/ZeroLengthPredicate
       ok
     elsif is_crit == false
       warning "Detected Locks #{lock_info}"

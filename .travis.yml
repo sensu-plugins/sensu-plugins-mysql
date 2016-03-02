@@ -1,19 +1,33 @@
 language: ruby
 cache:
-  - bundler
+- bundler
 install:
-  - bundle install
+- bundle install
 rvm:
-  - 1.9.3
-  - 2.0
-  - 2.1
-  - 2.2
+- 1.9.3
+- 2.0
+- 2.1
+- 2.2
 notifications:
   email:
     recipients:
-      - sensu-plugin@sensu-plugins.io
+    - sensu-plugin@sensu-plugins.io
     on_success: change
     on_failure: always
-
 script:
-  - 'bundle exec rake default'
+- bundle exec rake default
+- gem build sensu-plugins-mysql.gemspec
+- gem install sensu-plugins-mysql-*.gem
+deploy:
+  provider: rubygems
+  api_key:
+    secure: DxypH4N1hrsjdWs5foLsHKJYtA3/4aNVZy8QaGQMcxBAi7iONV5hEsspuj/603DsuWQ5DOGt3QCFCDi+B1lLYa+vWaRq7fucnbu+CYDEt5wgmT5gnHxwv+KrREUQM/gXlpXeIt6TnUDglh1OCCUnplMeqtQJmU2K3COlHMuBmSs=
+  gem: sensu-plugins-mysql
+  on:
+    tags: true
+    all_branches: true
+    rvm: 1.9.3
+    rvm: 2.0
+    rvm: 2.1
+    rvm: 2.2
+    repo: sensu-plugins/sensu-plugins-mysql
