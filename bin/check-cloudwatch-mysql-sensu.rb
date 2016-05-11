@@ -107,7 +107,8 @@ metric = AWS::CloudWatch::Metric.new('AWS/RDS', (options[:stat]).to_s,
 stats = metric.statistics(
   start_time: Time.now - 600,
   end_time: Time.now,
-  statistics: ['Average'])
+  statistics: ['Average']
+)
 latest = stats.first
 # puts "#{stats.metric.name}: #{latest[:average]} #{latest[:unit]}"
 # puts "#{options[:crit].to_f}"
