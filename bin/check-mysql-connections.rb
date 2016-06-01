@@ -11,7 +11,7 @@
 # for details.
 
 require 'sensu-plugin/check/cli'
-require 'mysql'
+require 'mysql2'
 require 'inifile'
 
 class CheckMySQLHealth < Sensu::Plugin::Check::CLI
@@ -76,15 +76,23 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
       db_user = config[:user]
       db_pass = config[:password]
     end
-    db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+    db = Mysql2::Client.new(
+      host: config[:hostname],
+      username: db_user,
+      password: db_pass,
+      database: config[:database],
+      port: config[:port].to_i,
+      socket: config[:socket]
+    )
+
     max_con = db
               .query("SHOW VARIABLES LIKE 'max_connections'")
-              .fetch_hash
+              .first
               .fetch('Value')
               .to_i
     used_con = db
                .query("SHOW GLOBAL STATUS LIKE 'Threads_connected'")
-               .fetch_hash
+               .first
                .fetch('Value')
                .to_i
     if config[:usepc]
@@ -97,7 +105,7 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
       warning "Max connections reached in MySQL: #{used_con} out of #{max_con}" if used_con >= config[:maxwarn].to_i
       ok "Max connections is under limit in MySQL: #{used_con} out of #{max_con}" # rubocop:disable Style/IdenticalConditionalBranches
     end
-  rescue Mysql::Error => e
+  rescue Mysql2::Error => e
     critical "MySQL check failed: #{e.error}"
   ensure
     db.close if db
