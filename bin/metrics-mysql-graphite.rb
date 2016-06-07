@@ -200,9 +200,11 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         section = ini['client']
         db_user = section['user']
         db_pass = section['password']
+        db_socket = section['socket']
       else
         db_user = config[:username]
         db_pass = config[:password]
+        db_socket = config[:socket]
       end
       begin
         mysql = Mysql2::Client.new(
@@ -210,7 +212,7 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
           port: config[:port],
           username: db_user,
           password: db_pass,
-          socket: config[:socket]
+          socket: db_socket
         )
 
         results = mysql.query('SHOW GLOBAL STATUS')
