@@ -8,7 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - added check-mysql-threads.rb script
 
 ### Changed
-- replace mysql with mysql2 in check-mysql-connections
+- replace mysql with mysql2 in check-mysql-connections, check-mysql-replication-status
 
 ## [0.0.4] - 2015-08-04
 ### Changed
