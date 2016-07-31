@@ -77,15 +77,6 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
-  option :help,
-         short: '-h',
-         long: '--help',
-         description: 'Check MySQL replication status',
-         on: :tail,
-         boolean: true,
-         show_options: true,
-         exit: 0
-
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])

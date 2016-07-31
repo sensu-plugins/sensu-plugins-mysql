@@ -52,15 +52,6 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          description: 'Critical threshold',
          default: '95'
 
-  option :help,
-         short: '-h',
-         long: '--help',
-         description: 'Check RDS disk usage',
-         on: :tail,
-         boolean: true,
-         show_options: true,
-         exit: 0
-
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])

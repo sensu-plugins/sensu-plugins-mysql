@@ -7,6 +7,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - added check-mysql-threads.rb script
 - changed metrics-mysql-graphite.rb to use mysql / ruby-mysql gem
+### Changed
+- removed --help option as it comes from opt parser
 
 ## [0.0.4] - 2015-08-04
 ### Changed
