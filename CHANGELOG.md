@@ -9,6 +9,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - changed metrics-mysql-graphite.rb to use mysql / ruby-mysql gem
 ### Changed
 - removed --help option as it comes from opt parser
+### Removed
+- check-cloudwatch-mysql-sensu.rb - sensu-plugins-aws check-cloudwatch-metric.rb should be used
 
 ## [0.0.4] - 2015-08-04
 ### Changed
