@@ -6,9 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Added
 - added check-mysql-threads.rb script
-
-### Changed
-- replace mysql with mysql2 in check-mysql-connections, check-mysql-replication-status
+- changed metrics-mysql-graphite.rb to use mysql / ruby-mysql gem
 
 ## [0.0.4] - 2015-08-04
 ### Changed
