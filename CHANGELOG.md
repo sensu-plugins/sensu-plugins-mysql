@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - added check-mysql-threads.rb script
 - changed metrics-mysql-graphite.rb to use mysql / ruby-mysql gem
 ### Changed
+- Removed compatibility with Ruby 1.9
 - removed --help option as it comes from opt parser
 ### Removed
 - check-cloudwatch-mysql-sensu.rb - sensu-plugins-aws check-cloudwatch-metric.rb should be used
