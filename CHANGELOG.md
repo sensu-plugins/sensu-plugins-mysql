@@ -4,11 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [0.1.0] - 2016-08-10
 ### Added
 - added check-mysql-threads.rb script
 - changed metrics-mysql-graphite.rb to use mysql / ruby-mysql gem
+
 ### Changed
+- Updated sensu-plugin dependency from `= 1.2.0` to `~> 1.2`
 - removed --help option as it comes from opt parser
+
 ### Removed
 - check-cloudwatch-mysql-sensu.rb - sensu-plugins-aws check-cloudwatch-metric.rb should be used
 
@@ -30,11 +35,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Changed
 - removed cruft from /lib
 
-##0.0.1 - 2015-05-29
+## 0.0.1 - 2015-05-29
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.4...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.4...0.1.0
 [0.0.4]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/0.0.1...0.0.2
