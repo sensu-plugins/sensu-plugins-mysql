@@ -249,6 +249,8 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
       rescue => e
         puts e.message
       end
+
+      mysql.close if mysql
     end
 
     ok
