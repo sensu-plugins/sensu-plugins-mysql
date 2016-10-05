@@ -5,6 +5,7 @@
 #
 # Copyright 2011 Sonian, Inc <chefs@sonian.net>
 # Updated by Oluwaseun Obajobi 2014 to accept ini argument
+# Updated by Nicola Strappazzon 2016 to implement Multi Source Replication
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
@@ -56,6 +57,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          long: '--password=VALUE',
          description: 'Database password'
 
+  option :master_connection,
+         short: '-c',
+         long: '--master-connection=VALUE',
+         description: 'Replication master connection name'
+
   option :ini,
          short: '-i',
          long: '--ini VALUE',
@@ -88,6 +94,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
       db_pass = config[:pass]
     end
     db_host = config[:host]
+    db_conn = config[:master_connection]
 
     if [db_host, db_user, db_pass].any?(&:nil?)
       unknown 'Must specify host, user, password'
@@ -95,7 +102,12 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
 
     begin
       db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
-      results = db.query 'show slave status'
+
+      results = if db_conn.nil?
+                  db.query 'SHOW SLAVE STATUS'
+                else
+                  db.query "SHOW SLAVE '#{db_conn}' STATUS"
+                end
 
       unless results.nil?
         results.each_hash do |row|
@@ -108,7 +120,12 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
             row[key] =~ /Yes/
           end
 
-          output = 'Slave not running!'
+          output = if db_conn.nil?
+                     'Slave not running!'
+                   else
+                     "Slave on master connection #{db_conn} not running!"
+                   end
+
           output += ' STATES:'
           output += " Slave_IO_Running=#{row['Slave_IO_Running']}"
           output += ", Slave_SQL_Running=#{row['Slave_SQL_Running']}"
@@ -125,8 +142,10 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
             warning message
           elsif replication_delay >= config[:crit]
             critical message
-          else
+          elsif db_conn.nil?
             ok "slave running: #{slave_running}, #{message}"
+          else
+            ok "master connection: #{db_conn}, slave running: #{slave_running}, #{message}"
           end
         end
         ok 'show slave status was nil. This server is not a slave.'
