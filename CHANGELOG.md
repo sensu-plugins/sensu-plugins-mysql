@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+## Added
+- added minimum thresholds to the check-mysql-threads.rb script
 
 ## [1.1.0] - 2016-10-05
 ### Added
