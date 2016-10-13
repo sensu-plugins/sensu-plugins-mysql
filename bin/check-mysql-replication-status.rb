@@ -58,7 +58,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Database password'
 
   option :master_connection,
-         short: '-c',
+         short: '-m',
          long: '--master-connection=VALUE',
          description: 'Replication master connection name'
 

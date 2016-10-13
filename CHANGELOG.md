@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [1.1.1] - 2016-10-13
+### Added
+- Fix short multi source replication on check-mysql-replication-status.rb
+
 ## [1.1.0] - 2016-10-05
 ### Added
 - added multi source replication parameter on check-mysql-replication-status.rb
