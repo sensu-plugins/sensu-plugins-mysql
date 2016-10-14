@@ -5,6 +5,10 @@
 # DESCRIPTION:
 #   MySQL Threads Health plugin
 #   This plugin evaluates the number of MySQL running threads and warns you according to specified limits
+#   -w for high threshold warning
+#   -c for high threshold critical
+#   -m for low threshold warning
+#   -l for low threshold critical
 #
 # OUTPUT:
 #   plain text
@@ -16,7 +20,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   check-mysql-threads.rb -w [threshold] -c [threshold]
+#   check-mysql-threads.rb -w [threshold] -c [threshold] -m [threshold] -l [threshold]
 #
 # NOTES:
 #
@@ -76,6 +80,18 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
          long: '--critnum NUMBER',
          default: 25
 
+  option :minwarn,
+         description: "Number of running threads under which we'll issue a warning",
+         short: '-m NUMBER',
+         long: '--warnlow NUMBER',
+         default: 1
+
+  option :mincrit,
+         description: "Number of running threads under which we'll issue an alert",
+         short: '-l NUMBER',
+         long: '--critlow NUMBER',
+         default: 0
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -90,6 +106,8 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
     run_thr = db.query("SHOW GLOBAL STATUS LIKE 'Threads_running'").fetch_hash.fetch('Value').to_i
     critical "MySQL currently running threads: #{run_thr}" if run_thr >= config[:maxcrit].to_i
     warning "MySQL currently running threads: #{run_thr}" if run_thr >= config[:maxwarn].to_i
+    critical "MySQL currently running threads: #{run_thr}" if run_thr <= config[:mincrit].to_i
+    warning "MySQL currently running threads: #{run_thr}" if run_thr <= config[:minwarn].to_i
     ok "Currently running threads are under limit in MySQL: #{run_thr}"
   rescue Mysql::Error => e
     critical "MySQL check failed: #{e.error}"
