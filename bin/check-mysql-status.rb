@@ -43,8 +43,8 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
   option :socket, description: 'Socket to use', short: '-s SOCKET', long: '--socket SOCKET', default: '/var/run/mysqld/mysqld.sock'
   option :binary, description: 'Absolute path to mysql binary', short: '-b BINARY', long: '--binary BINARY', default: 'mysql'
   option :check, description: 'type of check: status | replication', short: '-c CHECK', long: '--check CHECK', default: 'status'
-  option :warn, short: '-w', long: '--warning=VALUE', description: 'Warning threshold for replication lag', default: 900, proc: lambda { |s| s.to_i }
-  option :crit, short: '-c', long: '--critical=VALUE', description: 'Critical threshold for replication lag', default: 1800, proc: lambda { |s| s.to_i }
+  option :warn, short: '-w', long: '--warning=VALUE', description: 'Warning threshold for replication lag', default: 900
+  option :crit, short: '-c', long: '--critical=VALUE', description: 'Critical threshold for replication lag', default: 1800
   option :debug, description: 'Print debug info', long: '--debug', default: false
 
   def credentials
@@ -59,7 +59,7 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       db_pass = config[:password]
       db_socket = config[:socket]
     end
-    return db_user, db_pass, db_socket
+    db_user, db_pass, db_socket
   end
 
   def run
@@ -114,9 +114,9 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
           critical output unless slave_running
           replication_delay = table['Seconds_Behind_Master'].to_i
           message = "replication delayed by #{replication_delay}"
-          if replication_delay > config[:warn] && replication_delay <= config[:crit]
+          if replication_delay > config[:warn].to_i && replication_delay <= config[:crit].to_i
             warning message
-          elsif replication_delay >= config[:crit]
+          elsif replication_delay >= config[:crit].to_i
             critical message
           else
             ok "slave running: #{slave_running}, #{message}"
