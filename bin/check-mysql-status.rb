@@ -63,9 +63,7 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
   end
 
   def run
-    db_user= credentials[0]
-    db_pass= credentials[1] 
-    db_socket = credentials[2]
+    db_user = credentials[0]; db_pass = credentials[1]; db_socket = credentials[2]
     if config[:check] == 'status'
       begin
         cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} --port #{config[:port]} \
