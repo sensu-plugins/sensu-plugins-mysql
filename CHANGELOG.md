@@ -6,6 +6,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased][unreleased]
 - nothing
 
+## [0.0.5] - 2016-11-28
+### Added
+- Added systeme dependency free plugins
+
 ## [0.0.4] - 2015-08-04
 ### Changed
 - updated sensu-plugin gem to 1.2.0

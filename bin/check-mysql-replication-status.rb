@@ -92,9 +92,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
       section = ini['client']
       db_user = section['user']
       db_pass = section['password']
+      db_socket = section['socket']
     else
       db_user = config[:user]
       db_pass = config[:pass]
+      db_socket = config[:socket]
     end
     db_host = config[:host]
 
@@ -103,7 +105,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     end
 
     begin
-      db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
+      db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], db_socket)
       results = db.query 'show slave status'
 
       unless results.nil?

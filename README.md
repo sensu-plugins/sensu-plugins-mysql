@@ -10,6 +10,8 @@
 ## Functionality
 
 ## Files
+ * bin/check-mysql-status.rb
+ * bin/metrics-mysql-raw.rb
  * bin/check-cloudwatch-mysql-sensu.rb
  * bin/check-mysql-alive.rb
  * bin/check-mysql-connections.rb
