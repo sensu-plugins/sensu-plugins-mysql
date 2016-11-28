@@ -8,7 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [0.0.5] - 2016-11-28
 ### Added
-- Added systeme dependency free plugins
+- Fallback plugins that do not depend on mysql gem
 
 ## [0.0.4] - 2015-08-04
 ### Changed
