@@ -59,7 +59,7 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       db_pass = config[:password]
       db_socket = config[:socket]
     end
-    db_user, db_pass, db_socket
+    return db_user, db_pass, db_socket
   end
 
   def run
