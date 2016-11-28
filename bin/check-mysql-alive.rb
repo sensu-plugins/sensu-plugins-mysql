@@ -74,7 +74,7 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
       section = ini['client']
       db_user = section['user']
       db_pass = section['password']
-      db_socket = section['socket']
+      db_section = section['socket']
     else
       db_user = config[:user]
       db_pass = config[:password]
