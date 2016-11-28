@@ -31,54 +31,54 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'mysql2'
+require 'mysql'
 require 'socket'
 require 'inifile'
 
-class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
+class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
   option :host,
-         short: '-h HOST',
-         long: '--host HOST',
-         description: 'Mysql Host to connect to',
-         required: true
+    short: '-h HOST',
+    long: '--host HOST',
+    description: 'Mysql Host to connect to',
+    required: true
 
   option :port,
-         short: '-P PORT',
-         long: '--port PORT',
-         description: 'Mysql Port to connect to',
-         proc: proc(&:to_i),
-         default: 3306
+    short: '-P PORT',
+    long: '--port PORT',
+    description: 'Mysql Port to connect to',
+    proc: proc(&:to_i),
+    default: 3306
 
   option :username,
-         short: '-u USERNAME',
-         long: '--user USERNAME',
-         description: 'Mysql Username'
+    short: '-u USERNAME',
+    long: '--user USERNAME',
+    description: 'Mysql Username'
 
   option :password,
-         short: '-p PASSWORD',
-         long: '--pass PASSWORD',
-         description: 'Mysql password',
-         default: ''
+    short: '-p PASSWORD',
+    long: '--pass PASSWORD',
+    description: 'Mysql password',
+    default: ''
 
   option :ini,
-         short: '-i',
-         long: '--ini VALUE',
-         description: 'My.cnf ini file'
+    short: '-i',
+    long: '--ini VALUE',
+    description: 'My.cnf ini file'
 
   option :scheme,
-         description: 'Metric naming scheme, text to prepend to metric',
-         short: '-s SCHEME',
-         long: '--scheme SCHEME',
-         default: "#{Socket.gethostname}.mysql"
+    description: 'Metric naming scheme, text to prepend to metric',
+    short: '-s SCHEME',
+    long: '--scheme SCHEME',
+    default: "#{Socket.gethostname}.mysql"
 
   option :socket,
-         short: '-S SOCKET',
-         long: '--socket SOCKET'
+    short: '-S SOCKET',
+    long: '--socket SOCKET'
 
   option :verbose,
-         short: '-v',
-         long: '--verbose',
-         boolean: true
+    short: '-v',
+    long: '--verbose',
+    boolean: true
 
   def run
     # props to https://github.com/coredump/hoardd/blob/master/scripts-available/mysql.coffee
@@ -188,6 +188,7 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         'Innodb_rows_inserted' =>             'rowsInserted'
       },
       'configuration' => {
+        'max_connections'         =>          'MaxConnections',
         'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount'
       }
     }
@@ -199,27 +200,19 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         section = ini['client']
         db_user = section['user']
         db_pass = section['password']
-        db_socket = section['socket']
       else
         db_user = config[:username]
         db_pass = config[:password]
-        db_socket = config[:socket]
       end
       begin
-        mysql = Mysql2::Client.new(
-          host: mysql_host,
-          port: config[:port],
-          username: db_user,
-          password: db_pass,
-          socket: db_socket
-        )
+        mysql = Mysql.new(mysql_host, db_user, db_pass, nil, config[:port], config[:socket])
 
         results = mysql.query('SHOW GLOBAL STATUS')
       rescue => e
         puts e.message
       end
 
-      results.each do |row|
+      results.each_hash do |row|
         metrics.each do |category, var_mapping|
           if var_mapping.key?(row['Variable_name'])
             output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{var_mapping[row['Variable_name']]}", row['Value']
@@ -231,7 +224,7 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         slave_results = mysql.query('SHOW SLAVE STATUS')
         # should return a single element array containing one hash
         # #YELLOW
-        slave_results.first.each do |key, value|
+        slave_results.fetch_hash.each_pair do |key, value|
           if metrics['general'].include?(key)
             # Replication lag being null is bad, very bad, so negativate it here
             value = -1 if key == 'Seconds_Behind_Master' && value.nil?
@@ -246,7 +239,7 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
         variables_results = mysql.query('SHOW GLOBAL VARIABLES')
 
         category = 'configuration'
-        variables_results.each do |row|
+        variables_results.each_hash do |row|
           metrics[category].each do |metric, desc|
             if metric.casecmp(row['Variable_name']) == 0
               output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{desc}", row['Value']
@@ -256,6 +249,8 @@ class Mysql2Graphite < Sensu::Plugin::Metric::CLI::Graphite
       rescue => e
         puts e.message
       end
+
+      mysql.close if mysql
     end
 
     ok
