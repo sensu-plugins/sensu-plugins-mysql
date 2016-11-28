@@ -74,13 +74,15 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
       section = ini['client']
       db_user = section['user']
       db_pass = section['password']
+      db_socket = section['socket']
     else
       db_user = config[:user]
       db_pass = config[:password]
+      db_socket = config[:socket]
     end
 
     begin
-      db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+      db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, db_socket)
       info = db.get_server_info
       ok "Server version: #{info}"
     rescue Mysql::Error => e

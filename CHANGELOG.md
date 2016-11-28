@@ -28,6 +28,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Removed
 - check-cloudwatch-mysql-sensu.rb - sensu-plugins-aws check-cloudwatch-metric.rb should be used
 
+## [0.0.5] - 2016-11-28
+### Added
+- Fallback plugins - no dependency on mysql gem
+
 ## [0.0.4] - 2015-08-04
 ### Changed
 - updated sensu-plugin gem to 1.2.0
