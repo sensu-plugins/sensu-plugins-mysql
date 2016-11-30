@@ -10,7 +10,7 @@
 # for details.
 #
 # USING INI ARGUMENT
-# This was implemented to load mysql credentials without parsing 
+# This was implemented to load mysql credentials without parsing
 # the username/password.
 # The ini file should be readable by the sensu user/group.
 #
@@ -36,6 +36,7 @@ require 'sensu-plugin/metric/cli'
 require 'open3'
 require 'socket'
 require 'inifile'
+require 'timeout'
 
 #
 # Metrics Mysql Raw
@@ -80,6 +81,14 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
   )
 
   option(
+    :timeout,
+    description: 'Timeout',
+    short: '-T TIMEOUT',
+    long: '--timeout TIMEOUT',
+    default: 10
+  )
+
+  option(
     :port,
     description: 'Port to connect to',
     short: '-P PORT',
@@ -118,6 +127,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
     long: '--scheme SCHEME',
     default: "#{Socket.gethostname}.mysql"
   )
+
   option(
     :verbose,
     short: '-v',
@@ -246,9 +256,8 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
     metrics
   end
 
-  # Main Function
-  def run
-    ok 'Metrics deactivated by user using option --off' if config[:off] == true
+  # Fetch MySQL metrics
+  def fetcher
     metrics = metrics_hash
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -262,7 +271,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
       db_socket = config[:socket]
     end
     if config[:check] == 'metric'
-      mysql_shorthostname = config[:hostname].tr('.','_')
+      mysql_shorthostname = config[:hostname].tr('.', '_')
       begin
         table = []
         cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} \
@@ -273,7 +282,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         if status == 0
           puts status.to_s if config[:verbose]
           stdout.split("\n").each do |row|
-            line = row.tr("\t",':')
+            line = row.tr("\t", ':')
             key = line.split(':')[0]
             value = line.split(':')[1]
             table.push('Variable_name' => key, 'Value' => value)
@@ -343,6 +352,18 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
       ensure
         ok ''
       end
+    end
+  end
+
+  # Main Function
+  def run
+    ok 'Metrics deactivated by user using option --off' if config[:off] == true
+    begin
+      Timeout::timeout(config[:timeout]) do
+        fetcher
+      end
+    rescue Timeout::Error => e
+      unknown "Timed out #{e.message}"
     end
     unknown 'Did not succeed to retrieve MySQL metrics. Check your options'
   end
