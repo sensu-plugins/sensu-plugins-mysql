@@ -5,7 +5,6 @@
 #
 # This plugin attempts to login to mysql with provided credentials.
 # and outputs metrics in graphite format
-# AUthor: Magic Online
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
@@ -27,7 +26,8 @@
 #	 Copyright 2012 Pete Shima <me@peteshima.com>
 # 	Additional hacks by Joe Miller - https://github.com/joemiller
 # 	Updated by Oluwaseun Obajobi 2014 to accept ini argument
-# 	Adapted by Magic Online 11.2016 - www.magic.fr <hanynowsky@gmail.com>
+# 	Forked by Magic Online 11.2016 to not depend on mysql gem 
+#   - www.magic.fr <hanynowsky@gmail.com>
 # 	MIT - Same as Sensu License
 #
 
@@ -134,8 +134,8 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 		default: false
 	)
 
-	def run
-		ok 'Metrics deactivated by user using option --off' if config[:off] == true
+	# Metrics hash
+	def metrics_hash
 		metrics = {
 			'general' => {
 				'Bytes_received' =>         'rxBytes',
@@ -244,7 +244,13 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 				'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount'
 			}
 		}
+		metrics
+	end
 
+	# Main Function
+	def run
+		ok 'Metrics deactivated by user using option --off' if config[:off] == true
+		metrics = metrics_hash
 		if config[:ini]
 			ini = IniFile.load(config[:ini])
 			section = ini['client']
@@ -257,19 +263,20 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 			db_socket = config[:socket]
 		end
 		if config[:check] == 'metric'
-			mysql_shorthostname = config[:hostname].gsub('.','_')
+			mysql_shorthostname = config[:hostname].tr('.','_')
 			begin
 				table = []
-				cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} --port #{config[:port]} --socket #{db_socket} -p\"#{db_pass.chomp}\" --batch --disable-column-names -e 'SHOW GLOBAL STATUS;'"
-				stdout, stderr, status = Open3.capture3(cmd)
+				cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} --port #{config[:port]} \
+				--socket #{db_socket} -p\"#{db_pass.chomp}\" --batch --disable-column-names -e 'SHOW GLOBAL STATUS;'"
+				stdout, _stderr, status = Open3.capture3(cmd)
 				puts status.to_s.split(' ')[3] if config[:verbose]
 				if status == 0
 					puts status.to_s if config[:verbose]
 					stdout.split("\n").each do |row|
-						line = row.gsub("\t",':')
+						line = row.tr("\t",':')
 						key = line.split(':')[0]
 						value = line.split(':')[1]
-						table.push('Variable_name' => key,  'Value' => value)
+						table.push('Variable_name' => key, 'Value' => value)
 					end
 				else
 					critical "Error message: status: #{status}"
@@ -303,21 +310,21 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 
 				begin
 					table = []
-					cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} --port #{config[:port]} --socket #{db_socket} -p\"#{db_pass.chomp}\" --batch --disable-column-names -e 'SHOW GLOBAL VARIABLES;'"
-					stdout, stderr, status = Open3.capture3(cmd)
+					cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} --port #{config[:port]} \
+					--socket #{db_socket} -p\"#{db_pass.chomp}\" --batch --disable-column-names -e 'SHOW GLOBAL VARIABLES;'"
+					stdout, _stderr, status = Open3.capture3(cmd)
 					puts status.to_s.split(' ')[3] if config[:verbose]
 					if status == 0
 						puts status.to_s if config[:verbose]
 						stdout.split("\n").each do |row|
-							line = row.gsub("\t",':')
+							line = row.tr("\t",':')
 							key = line.split(':')[0]
 							value = line.split(':')[1]
-							table.push('Variable_name' => key,  'Value' => value)
+							table.push('Variable_name' => key, 'Value' => value)
 						end
 					else
 						critical "Error message: Global variables -  status: #{status}"
 					end
-					##########################
 					variables_results = table
 					category = 'configuration'
 					variables_results.each do |row|
@@ -327,7 +334,6 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 							end
 						end
 					end
-					#########################
 				rescue => e
 					puts e.message
 				end
