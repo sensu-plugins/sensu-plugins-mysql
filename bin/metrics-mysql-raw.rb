@@ -26,7 +26,7 @@
 #	 Copyright 2012 Pete Shima <me@peteshima.com>
 # 	Additional hacks by Joe Miller - https://github.com/joemiller
 # 	Updated by Oluwaseun Obajobi 2014 to accept ini argument
-# 	Forked by Magic Online 11.2016 to not depend on mysql gem 
+# 	Forked by Magic Online 11.2016 to not depend on mysql gem
 #   - www.magic.fr <hanynowsky@gmail.com>
 # 	MIT - Same as Sensu License
 #
@@ -41,7 +41,7 @@ require 'inifile'
 #
 class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 	option(
-		:user,
+    :user,
 		description: 'MySQL User',
 		short: '-u USER',
 		long: '--user USER',
