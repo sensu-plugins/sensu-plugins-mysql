@@ -256,9 +256,8 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
     metrics
   end
 
-  # Fetch MySQL metrics
-  def fetcher
-    metrics = metrics_hash
+  # Credentials
+  def credentials
     if config[:ini]
       ini = IniFile.load(config[:ini])
       section = ini['client']
@@ -270,6 +269,62 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
       db_pass = config[:password]
       db_socket = config[:socket]
     end
+    [db_user, db_pass, db_socket]
+  end
+
+  # Slave metrics
+  def slave_metrics(metrics)
+    # should return a single element array containing one hash
+    # #YELLOW
+    mysql_shorthostname = config[:hostname].tr('.', '_')
+    slave_results = Hash['a' => 100, 'b' => 200]
+    slave_results.first.each do |key, value|
+      if metrics['general'].include?(key)
+        # Replication lag being null is bad, very bad, so negativate it here
+        value = -1 if key == 'Seconds_Behind_Master' && value.nil?
+        output "#{config[:scheme]}.#{mysql_shorthostname}.general.#{metrics['general'][key]}", value
+      end
+    end
+  rescue => e
+    puts "Error querying slave status: #{e}" if config[:verbose]
+  end
+
+  # Configuration metrics
+  def configuration_metrics(metrics, db_user, db_pass, db_socket)
+    mysql_shorthostname = config[:hostname].tr('.', '_')
+    table = []
+    cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} \
+--port #{config[:port]} --socket #{db_socket} -p\"#{db_pass.chomp}\" --batch \
+--disable-column-names -e 'SHOW GLOBAL VARIABLES;'"
+    stdout, _stderr, status = Open3.capture3(cmd)
+    puts status.to_s.split(' ')[3] if config[:verbose]
+    if status == 0
+      puts status.to_s if config[:verbose]
+      stdout.split("\n").each do |row|
+        line = row.tr("\t", ':')
+        key = line.split(':')[0]
+        value = line.split(':')[1]
+        table.push('Variable_name' => key, 'Value' => value)
+      end
+    else
+      critical "Error message: Global variables -  status: #{status}"
+    end
+    variables_results = table
+    category = 'configuration'
+    variables_results.each do |row|
+      metrics[category].each do |metric, desc|
+        if metric.casecmp(row['Variable_name']) == 0
+          output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{desc}", row['Value']
+        end
+      end
+    end
+  rescue => e
+    puts e.message
+  end
+
+  # Fetch MySQL metrics
+  def fetcher(db_user, db_pass, db_socket)
+    metrics = metrics_hash
     if config[:check] == 'metric'
       mysql_shorthostname = config[:hostname].tr('.', '_')
       begin
@@ -301,52 +356,9 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
             end
           end
         end
-
-        begin
-          # Slave status here
-          # should return a single element array containing one hash
-          # #YELLOW
-          slave_results = Hash['a' => 100, 'b' => 200]
-          slave_results.first.each do |key, value|
-            if metrics['general'].include?(key)
-              # Replication lag being null is bad, very bad, so negativate it here
-              value = -1 if key == 'Seconds_Behind_Master' && value.nil?
-              output "#{config[:scheme]}.#{mysql_shorthostname}.general.#{metrics['general'][key]}", value
-            end
-          end
-        rescue => e
-          puts "Error querying slave status: #{e}" if config[:verbose]
-        end
-        begin
-          table = []
-          cmd = "#{config[:binary]} -u #{db_user} -h #{config[:hostname]} \
---port #{config[:port]} --socket #{db_socket} -p\"#{db_pass.chomp}\" --batch \
---disable-column-names -e 'SHOW GLOBAL VARIABLES;'"
-          stdout, _stderr, status = Open3.capture3(cmd)
-          puts status.to_s.split(' ')[3] if config[:verbose]
-          if status == 0
-            puts status.to_s if config[:verbose]
-            stdout.split("\n").each do |row|
-              line = row.tr("\t",':')
-              key = line.split(':')[0]
-              value = line.split(':')[1]
-              table.push('Variable_name' => key, 'Value' => value)
-            end
-          else
-            critical "Error message: Global variables -  status: #{status}"
-          end
-          variables_results = table
-          category = 'configuration'
-          variables_results.each do |row|
-            metrics[category].each do |metric, desc|
-              if metric.casecmp(row['Variable_name']) == 0
-                output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{desc}", row['Value']
-              end
-            end
-          end
-        rescue => e
-          puts e.message
-        end
+        # Slave and configuration metrics here
+        slave_metrics(metrics)
+        configuration_metrics(metrics, db_user, db_pass, db_socket)
       rescue => e
         critical "Error message: status: #{status} | Exception: #{e.backtrace}"
       ensure
@@ -359,8 +371,8 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
   def run
     ok 'Metrics deactivated by user using option --off' if config[:off] == true
     begin
-      Timeout::timeout(config[:timeout]) do
-        fetcher
+      Timeout.timeout(config[:timeout]) do
+        fetcher(credentials[0], credentials[1], credentials[2])
       end
     rescue Timeout::Error => e
       unknown "Timed out #{e.message}"
