@@ -7,6 +7,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Added
 - added minimum thresholds to the check-mysql-threads.rb script
 - Added metrics plugin with mysql gem requirement
+- Added metrics plugin from `SHOW PROCESSLIST`
 
 ## [1.1.1] - 2016-10-13
 ### Added
