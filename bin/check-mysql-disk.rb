@@ -4,6 +4,8 @@
 # ===
 #
 # Copyright 2011 Sonian, Inc <chefs@sonian.net>
+# Updated by William Hahn 2017 to add -P|--port and
+# -s|--socket arguments
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
@@ -52,6 +54,19 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          description: 'Critical threshold',
          default: '95'
 
+  option :port,
+         description: 'Port to connect to',
+         short: '-P PORT',
+         long: '--port PORT',
+         proc: proc(&:to_i),
+         default: '3306'
+
+  option :socket,
+         description: 'Socket to use',
+         short: '-s SOCKET',
+         long: '--socket SOCKET',
+         default: nil
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -73,7 +88,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
 
     begin
       total_size = 0.0
-      db = Mysql.new(db_host, db_user, db_pass)
+      db = Mysql.real_connect(config[:host], db_user, db_pass, nil, config[:port], config[:socket])
 
       results = db.query <<-EOSQL
         SELECT table_schema,
