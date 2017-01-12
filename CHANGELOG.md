@@ -9,6 +9,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Added metrics plugin with mysql gem requirement
 - Added metrics plugin from `SHOW PROCESSLIST`
 
+## [1.1.2] - 2016-11-28
+### Added
+- Fallback plugin with no mysql gem requirement - status and replication
+
 ## [1.1.1] - 2016-10-13
 ### Added
 - Fix short multi source replication on check-mysql-replication-status.rb
