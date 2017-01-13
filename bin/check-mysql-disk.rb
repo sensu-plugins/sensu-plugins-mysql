@@ -4,8 +4,7 @@
 # ===
 #
 # Copyright 2011 Sonian, Inc <chefs@sonian.net>
-# Updated by William Hahn 2017 to add -P|--port and
-# -s|--socket arguments
+
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
