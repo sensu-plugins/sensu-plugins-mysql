@@ -4,7 +4,6 @@
 # ===
 #
 # Copyright 2011 Sonian, Inc <chefs@sonian.net>
-
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
