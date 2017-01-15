@@ -4,22 +4,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-## Added
-- added minimum thresholds to the check-mysql-threads.rb script
+### Added
+- Added minimum thresholds to the check-mysql-threads.rb script
 - Added metrics plugin with mysql gem requirement
-- Added metrics plugin from `SHOW PROCESSLIST`
+- Added metrics plugin metrics-mysql-processes from `SHOW PROCESSLIST`
+- Added fallback plugin check-mysql-status.rb with no mysql gem requirement - status and replication
+- Added multi source replication parameter on check-mysql-replication-status.rb
 
-## [1.1.2] - 2016-11-28
-### Added
-- Fallback plugin with no mysql gem requirement - status and replication
-
-## [1.1.1] - 2016-10-13
-### Added
-- Fix short multi source replication on check-mysql-replication-status.rb
-
-## [1.1.0] - 2016-10-05
-### Added
-- added multi source replication parameter on check-mysql-replication-status.rb
+### Fixed
+- metrics-mysql-graphite.rb: Properly close mysql connection
 
 ## [1.0.0] - 2016-08-15
 ### Added
