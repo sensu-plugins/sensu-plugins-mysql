@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+- Added check-mysql-query-result-count.rb script
 
 ## [1.1.0] - 2017-01-15
 ### Added
