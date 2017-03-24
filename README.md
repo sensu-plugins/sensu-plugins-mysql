@@ -16,6 +16,7 @@
  * bin/check-mysql-disk.rb
  * bin/check-mysql-innodb-lock.rb
  * bin/check-mysql-threads.rb
+ * bin/check-mysql-query-result-count.rb
  * bin/metrics-mysql-graphite.rb
  * bin/metrics-mysql-processes.rb
  * bin/metrics-mysql-raw.rb
@@ -45,6 +46,11 @@
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-connections.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock
 ```
 
+**check-mysql-query-result-count** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 1 --critical 10 --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
+```
+
 ## Installation
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
@@ -53,7 +59,7 @@
 The ruby executables are install in path similar to `/opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/sensu-plugins-mysql-0.0.4/bin`
 
 ## Troubleshooting
-When used in `chef`, if the dependencies are missing, an error may abort the chef-client run: 
+When used in `chef`, if the dependencies are missing, an error may abort the chef-client run:
 ```bash
 *** extconf.rb failed ***
 Could not create Makefile due to some reason, probably lack of
