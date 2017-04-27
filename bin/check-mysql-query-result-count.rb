@@ -38,6 +38,12 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
          description: 'MySQL password',
          default: ''
 
+  option :database,
+         short: '-d DATABASE',
+         long: '--database DATABASE',
+         description: 'MySQL database',
+         default: ''
+
   option :ini,
          short: '-i',
          long: '--ini VALUE',
