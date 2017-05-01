@@ -81,7 +81,7 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
       db_user = section['user']
       db_pass = section['password']
     else
-      db_user = config[:user]
+      db_user = config[:username]
       db_pass = config[:password]
     end
     db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
