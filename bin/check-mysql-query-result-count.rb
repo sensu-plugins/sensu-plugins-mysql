@@ -84,7 +84,7 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
       db_user = config[:user]
       db_pass = config[:password]
     end
-    db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+    db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
     length = db.query(config[:query]).count
 
     if length >= config[:crit]
