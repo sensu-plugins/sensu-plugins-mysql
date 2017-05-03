@@ -38,6 +38,12 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
          description: 'MySQL password',
          default: ''
 
+  option :database,
+         short: '-d DATABASE',
+         long: '--database DATABASE',
+         description: 'MySQL database',
+         required: true
+
   option :ini,
          short: '-i',
          long: '--ini VALUE',
@@ -75,10 +81,10 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
       db_user = section['user']
       db_pass = section['password']
     else
-      db_user = config[:user]
+      db_user = config[:username]
       db_pass = config[:password]
     end
-    db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+    db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
     length = db.query(config[:query]).count
 
     if length >= config[:crit]
