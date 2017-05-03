@@ -42,7 +42,7 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
          short: '-d DATABASE',
          long: '--database DATABASE',
          description: 'MySQL database',
-         default: ''
+         required: true
 
   option :ini,
          short: '-i',
