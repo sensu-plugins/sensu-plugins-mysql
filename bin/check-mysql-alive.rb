@@ -27,7 +27,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'mysql'
+require 'mysql2'
 require 'inifile'
 
 class CheckMySQL < Sensu::Plugin::Check::CLI
@@ -80,10 +80,17 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
     end
 
     begin
-      db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
-      info = db.get_server_info
+      db = Mysql2::Client.new(
+        host: config[:hostname],
+        username: db_user,
+        password: db_pass,
+        database: config[:database],
+        port: config[:port].to_i,
+        socket: config[:socket]
+      )
+      info = db.query('select version()').first.values.first
       ok "Server version: #{info}"
-    rescue Mysql::Error => e
+    rescue Mysql2::Error => e
       critical "Error message: #{e.error}"
     ensure
       db.close if db
