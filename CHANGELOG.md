@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- Switch check-mysql-alive.rb to mysql2 gem
+- Switch check-mysql-replication-status.rb to mysql2 gem 
+
+## [Unreleased]
 ## [1.2.1] - 2017-05-03
 ### Fixed
 - Fix configuration for check-mysql-query-result-count.rb script (@athal7)
