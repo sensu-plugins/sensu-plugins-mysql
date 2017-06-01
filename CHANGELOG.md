@@ -6,7 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Added
 - Switch check-mysql-alive.rb to mysql2 gem
-- Switch check-mysql-replication-status.rb to mysql2 gem 
+- Switch check-mysql-replication-status.rb to mysql2 gem
 
 ## [Unreleased]
 ## [1.2.1] - 2017-05-03
