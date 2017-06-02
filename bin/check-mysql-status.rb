@@ -34,18 +34,75 @@ require 'open3'
 
 # Check MySQL Status
 class CheckMySQLStatus < Sensu::Plugin::Check::CLI
-  option :user, description: 'MySQL User', short: '-u USER', long: '--user USER', default: 'mosim'
-  option :password, description: 'MySQL Password', short: '-p PASS', long: '--password PASS', default: 'mysqlPassWord'
-  option :ini, description: 'My.cnf ini file', short: '-i', long: '--ini VALUE'
-  option :hostname, description: 'Hostname to login to', short: '-h HOST', long: '--hostname HOST', default: 'localhost'
-  option :database, description: 'Database schema to connect to', short: '-d DATABASE', long: '--database DATABASE', default: 'test'
-  option :port, description: 'Port to connect to', short: '-P PORT', long: '--port PORT', default: '3306'
-  option :socket, description: 'Socket to use', short: '-s SOCKET', long: '--socket SOCKET', default: '/var/run/mysqld/mysqld.sock'
-  option :binary, description: 'Absolute path to mysql binary', short: '-b BINARY', long: '--binary BINARY', default: 'mysql'
-  option :check, description: 'type of check: status | replication', short: '-c CHECK', long: '--check CHECK', default: 'status'
-  option :warn, short: '-w', long: '--warning=VALUE', description: 'Warning threshold for replication lag', default: 900
-  option :crit, short: '-c', long: '--critical=VALUE', description: 'Critical threshold for replication lag', default: 1800
-  option :debug, description: 'Print debug info', long: '--debug', default: false
+  option :user,
+         description: 'MySQL User, you really should use ini to hide credentials instead of using me',
+         short: '-u USER',
+         long: '--user USER',
+         default: 'mosim'
+
+  option :password,
+         description: 'MySQL Password, you really should use ini to hide credentials instead of using me',
+         short: '-p PASS',
+         long: '--password PASS',
+         default: 'mysqlPassWord'
+
+  option :ini,
+         description: 'My.cnf ini file',
+         short: '-i',
+         long: '--ini VALUE'
+
+  option :hostname,
+         description: 'Hostname to login to',
+         short: '-h HOST',
+         long: '--hostname HOST',
+         default: 'localhost'
+
+  option :database,
+         description: 'Database schema to connect to',
+         short: '-d DATABASE',
+         long: '--database DATABASE',
+         default: 'test'
+
+  option :port,
+         description: 'Port to connect to',
+         short: '-P PORT',
+         long: '--port PORT',
+         default: '3306'
+
+  option :socket,
+         description: 'Socket to use',
+         short: '-s SOCKET',
+         long: '--socket SOCKET',
+         default: '/var/run/mysqld/mysqld.sock'
+
+  option :binary,
+         description: 'Absolute path to mysql binary',
+         short: '-b BINARY',
+         long: '--binary BINARY',
+         default: 'mysql'
+
+  option :check,
+         description: 'type of check: (status|replication)',
+         short: '-C CHECK',
+         long: '--check CHECK',
+         default: 'status'
+
+  option :warn,
+         description: 'Warning threshold for replication lag',
+         short: '-w',
+         long: '--warning=VALUE',
+         default: 900
+
+  option :crit,
+         description: 'Critical threshold for replication lag',
+         short: '-c',
+         long: '--critical=VALUE',
+         default: 1800
+
+  option :debug,
+         description: 'Print debug info',
+         long: '--debug',
+         default: false
 
   def credentials
     if config[:ini]

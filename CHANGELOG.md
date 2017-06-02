@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Breaking Change
+- check-mysql-status.rb: renamed short arg of `--check` due to conflicts (@majormoses)
+
+### Changed
+- check-mysql-status.rb: made the options easier to read by splitting them across multiple lines (@majormoses)
+
 ## [1.2.1] - 2017-05-03
 ### Fixed
 - Fix configuration for check-mysql-query-result-count.rb script (@athal7)
