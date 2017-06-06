@@ -10,6 +10,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Changed
 - check-mysql-status.rb: made the options easier to read by splitting them across multiple lines (@majormoses)
 
+### Added
+- Add testing on Ruby 2.4 (@eheydrick)
+
 ## [1.2.1] - 2017-05-03
 ### Fixed
 - Fix configuration for check-mysql-query-result-count.rb script (@athal7)
