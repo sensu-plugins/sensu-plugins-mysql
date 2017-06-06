@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-### Added
+### Breaking Changes
 - Switch check-mysql-alive.rb to mysql2 gem
 - Switch check-mysql-replication-status.rb to mysql2 gem
 
