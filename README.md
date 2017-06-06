@@ -56,7 +56,8 @@
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
 
 ## Notes
-The ruby executables are install in path similar to `/opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/sensu-plugins-mysql-0.0.4/bin`
+* The ruby executables are install in path similar to `/opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/sensu-plugins-mysql-0.0.4/bin`
+* 'check-mysql-alive' and 'check-mysql-replication-status' use the [mysql2 gem](https://github.com/brianmario/mysql2). This gem requires your preferred MySQL dev package and a compiler. Installation details are [here](https://github.com/brianmario/mysql2#installing).
 
 ## Troubleshooting
 When used in `chef`, if the dependencies are missing, an error may abort the chef-client run:
