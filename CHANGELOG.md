@@ -18,7 +18,6 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Add testing on Ruby 2.4 (@eheydrick)
 
->>>>>>> master
 ## [1.2.1] - 2017-05-03
 ### Fixed
 - Fix configuration for check-mysql-query-result-count.rb script (@athal7)
