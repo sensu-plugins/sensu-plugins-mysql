@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [2.0.0] - 2017-06-05
 ### Breaking Change
 - check-mysql-status.rb: renamed short arg of `--check` due to conflicts (@majormoses)
 
@@ -66,7 +68,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.1...2.0.0
 [1.2.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.0.0...1.1.0
