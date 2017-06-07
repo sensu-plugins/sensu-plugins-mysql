@@ -21,6 +21,7 @@
  * bin/metrics-mysql-processes.rb
  * bin/metrics-mysql-raw.rb
  * bin/metrics-mysql.rb
+ * bin/metrics-mysql-query-result-count.rb
  * bin/mysql-metrics.sql
 
 ## Usage
@@ -49,6 +50,11 @@
 **check-mysql-query-result-count** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 1 --critical 10 --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
+```
+
+**metrics-mysql-query-result-count** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
 ```
 
 ## Installation
