@@ -57,6 +57,28 @@
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
 ```
 
+### Security
+
+Rather than being lazy and giving it say the root user or another user that has root privileges you should create a new user with the minimum required permissions. See the table below for minimum permissions for each check.
+
+| Check                                  | Permissions                                               |
+|:---------------------------------------|:----------------------------------------------------------|
+| check-mysql-alive.rb                   | `SELECT`                                                  |
+| check-mysql-connections.rb             | `SELECT`                                                  |
+| check-mysql-disk.rb                    | `SELECT`                                                  |
+| check-mysql-innodb-lock.rb             | `PROCESS`                                                 |
+| check-mysql-query-result-count.rb      | depends on query                                          |
+| check-mysql-replication-status.rb      | `SUPER` OR `REPLICATION_CLIENT` (the latter is preferable)|
+| check-mysql-status.rb                  | `SELECT`                                                  |
+| check-mysql-threads.rb                 | `SELECT`                                                  |
+| metrics-mysql-graphite.rb              | `SELECT`                                                  |
+| metrics-mysql-processes.rb             | `SELECT`                                                  |
+| metrics-mysql-query-result-count.rb    | depends on query                                          |
+| metrics-mysql-raw.rb                   | `SELECT`                                                  |
+| metrics-mysql.rb                       | `INSERT` into `sensumetrics.sensu_historic_metrics`       |
+
+I would recommend using different users when you need to have more than RO access (`REPLICATION_CLIENT` or using the metrics handler) to limit the potential ramifications of that user being compromised.
+
 ## Installation
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
