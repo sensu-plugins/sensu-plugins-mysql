@@ -7,6 +7,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Added minimum viable permissions in `README` for all the checks, metrics, and handlers. (@majormoses)
 
+### Fixed
+- check-mysql-disk.rb: make required options required. (@majormoses)
+
+### Changed
+- check-mysql-disk.rb: misc changes on where option output is cast. (@majormoses)
+
 ## [2.1.0] - 2017-06-10
 ### Added
 - metrics-mysql-query-result-count.rb: Creates a graphite-formatted metric for the length of a result set from a MySQL query. (@athal7)
