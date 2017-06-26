@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [2.1.1] - 2017-06-25
 ### Added
 - Added minimum viable permissions in `README` for all the checks, metrics, and handlers. (@majormoses)
 
@@ -80,7 +82,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.1...2.0.0
 [1.2.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.0...1.2.1
