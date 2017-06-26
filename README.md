@@ -59,7 +59,7 @@
 
 ### Security
 
-Rather than being lazy and giving it say the root user or another user that has root privileges you should create a new user with the minimum required permissions. See the table below for minimum permissions for each check.
+In keeping with the principal of least privilege you should create a new user with the minimum required permissions. See the table below for minimum permissions for each check.
 
 | Check                                  | Permissions                                               |
 |:---------------------------------------|:----------------------------------------------------------|
