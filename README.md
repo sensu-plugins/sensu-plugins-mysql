@@ -25,7 +25,6 @@
  * bin/mysql-metrics.sql
 
 ## Usage
-
 **metrics-mysql**
 ```
 {
@@ -45,6 +44,36 @@
 **check-mysql-connections** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-connections.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock
+```
+
+**check-mysql-connections** example with ini file to hide credentials
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-connections.rb --host=<DBHOST> --ini=/etc/sensu/my.ini
+```
+
+**check-mysql-alive** example
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-alive.rb --host=<DBHOST> --ini=/etc/sensu/my.ini
+```
+
+**check-mysql-disk** example (note: you must supply max disk size)
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-disk.rb --host=<DBHOST> --ini=/etc/sensu/my.ini --size <MAX_DB_SIZE>
+```
+
+**check-mysql-innodb-lock** example
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-innodb-lock.rb --host=<DBHOST> --ini=/etc/sensu/my.ini
+```
+
+**check-mysql-threads** example
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-threads.rb --host=<DBHOST> --ini=/etc/sensu/my.ini --warnlow 0
+```
+
+**check-mysql-replication-status** example
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
 ```
 
 **check-mysql-query-result-count** example
