@@ -5,7 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Changed
-- In `README` clarify why they should not use privileged users for monitoring with sensu. (@majormoses) 
+- In `README` clarify why they should not use privileged users for monitoring with sensu. (@majormoses)
+- In `README` add more usage examples. (@rwillmer)
 
 ## [2.1.1] - 2017-06-25
 ### Added
