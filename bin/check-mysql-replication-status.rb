@@ -103,10 +103,26 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     begin
       db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
 
+      db_flavor = ''
+      db_flavor_version = db.query 'SHOW VARIABLES LIKE "version_comment"'
+      db_flavor_version.each_hash do |row|
+        if row['Value'].include? 'mariadb'
+          db_flavor = 'mariadb'
+        elsif row['Value'].include? 'MySQL'
+          db_flavor = 'mysql'
+        elsif row['Value'].include? 'Percona'
+          db_flavor = "percona"
+        else
+          db_flavor = 'unknown'
+        end
+      end
+
       results = if db_conn.nil?
                   db.query 'SHOW SLAVE STATUS'
-                else
+                elsif db_flavor.include? 'mariadb'
                   db.query "SHOW SLAVE '#{db_conn}' STATUS"
+                elsif db_flavor.include? 'mysql' || 'percona'
+                  db.query "SHOW SLAVE STATUS FOR CHANNEL '#{db_conn}'"
                 end
 
       unless results.nil?
