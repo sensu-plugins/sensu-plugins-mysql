@@ -4,6 +4,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Changed
+- In `README` clarify why they should not use privileged users for monitoring with sensu. (@majormoses)
+- In `README` add more usage examples. (@rwillmer)
+
+## [2.1.1] - 2017-06-25
+### Added
+- Added minimum viable permissions in `README` for all the checks, metrics, and handlers. (@majormoses)
+
+### Fixed
+- check-mysql-disk.rb: make required options required. (@majormoses)
+
+### Changed
+- check-mysql-disk.rb: misc changes on where option output is cast. (@majormoses)
+
 ## [2.1.0] - 2017-06-10
 ### Added
 - metrics-mysql-query-result-count.rb: Creates a graphite-formatted metric for the length of a result set from a MySQL query. (@athal7)
@@ -71,7 +85,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.1...2.0.0
 [1.2.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.0...1.2.1

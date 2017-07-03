@@ -38,18 +38,22 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
   option :size,
          short: '-s',
          long: '--size=VALUE',
-         description: 'Database size'
+         description: 'Database size',
+         proc: proc(&:to_f),
+         required: true
 
   option :warn,
          short: '-w',
          long: '--warning=VALUE',
          description: 'Warning threshold',
+         proc: proc(&:to_f),
          default: '85'
 
   option :crit,
          short: '-c',
          long: '--critical=VALUE',
          description: 'Critical threshold',
+         proc: proc(&:to_f),
          default: '95'
 
   option :port,
@@ -76,9 +80,9 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
       db_pass = config[:pass]
     end
     db_host = config[:host]
-    disk_size = config[:size].to_f
-    critical_usage = config[:crit].to_f
-    warning_usage = config[:warn].to_f
+    disk_size = config[:size]
+    critical_usage = config[:crit]
+    warning_usage = config[:warn]
 
     if [db_host, db_user, db_pass, disk_size].any?(&:nil?)
       unknown 'Must specify host, user, password and size'
