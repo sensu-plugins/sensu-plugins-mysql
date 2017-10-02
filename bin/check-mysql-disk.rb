@@ -65,7 +65,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
 
   option :socket,
          description: 'Socket to use',
-         short: '-s SOCKET',
+         short: '-S SOCKET',
          long: '--socket SOCKET',
          default: nil
 
