@@ -4,9 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [2.1.2] - 2017-10-04
 ### Changed
 - In `README` clarify why they should not use privileged users for monitoring with sensu. (@majormoses)
 - In `README` add more usage examples. (@rwillmer)
+
+### Fixed
+- check-mysql-disk.rb: fixed short option `-s` to `-S` for `--socket` as it conflicted with `--size` (@2autunni)
 
 ## [2.1.1] - 2017-06-25
 ### Added
@@ -86,6 +91,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - initial release
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...HEAD
+[2.1.2]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/1.2.1...2.0.0
