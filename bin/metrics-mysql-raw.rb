@@ -16,12 +16,17 @@
 #
 #   EXAMPLE
 #     metrics-mysql-raw.rb -h localhost --ini '/etc/sensu/my.cnf'
+#     metrics-mysql-raw.rb -h localhost --ini '/etc/sensu/my.cnf' --ini-section customsection
 #
 #   MY.CNF INI FORMAT
 #   [client]
 #   user=sensu
 #   password="abcd1234"
 #   socket="/var/lib/mysql/mysql.sock"
+#
+#   [customsection]
+#   user=user
+#   password="password"
 #
 # LICENSE:
 #  Copyright 2012 Pete Shima <me@peteshima.com>
@@ -57,11 +62,19 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
     long: '--password PASS',
     default: 'mysqlPassWord'
   )
+
   option(
     :ini,
     description: 'My.cnf ini file',
     short: '-i',
     long: '--ini VALUE'
+  )
+
+  option(
+    :ini_section,
+    description: 'Section in my.cnf ini file',
+    long: '--ini-section VALUE',
+    default: 'client'
   )
 
   option(
@@ -260,7 +273,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
   def credentials
     if config[:ini]
       ini = IniFile.load(config[:ini])
-      section = ini['client']
+      section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
       db_socket = section['socket']
