@@ -4,6 +4,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Changed
+- check-mysql-alive.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-connections.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-disk.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-innodb-lock.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-query-result-count.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-replication-status.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-status.rb: Add support for custom section in inifile. (@oba11)
+- check-mysql-threads.rb: Add support for custom section in inifile. (@oba11)
+- metrics-mysql-graphite.rb: Add support for custom section in inifile. (@oba11)
+- metrics-mysql-processes.rb: Add support for custom section in inifile. (@oba11)
+- metrics-mysql-query-result-count.rb: Add support for custom section in inifile. (@oba11)
+- metrics-mysql-raw.rb: Add support for custom section in inifile. (@oba11)
 
 ## [2.1.2] - 2017-10-04
 ### Changed

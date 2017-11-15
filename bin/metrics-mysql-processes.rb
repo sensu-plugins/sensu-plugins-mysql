@@ -25,11 +25,16 @@
 #
 #   EXAMPLE
 #     mysql-alive.rb -h db01 --ini '/etc/sensu/my.cnf'
+#     mysql-alive.rb -h db01 --ini '/etc/sensu/my.cnf' --ini-section customsection
 #
 #   MY.CNF INI FORMAT
 #   [client]
 #   user=sensu
 #   password="abcd1234"
+#
+#   [customsection]
+#   user=user
+#   password="password"
 #
 # NOTES:
 #
@@ -73,6 +78,11 @@ class MetricsMySQLProcesses < Sensu::Plugin::Metric::CLI::Graphite
          long: '--ini VALUE',
          description: 'My.cnf ini file'
 
+  option :ini_section,
+         description: 'Section in my.cnf ini file',
+         long: '--ini-section VALUE',
+         default: 'client'
+
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
@@ -89,7 +99,7 @@ class MetricsMySQLProcesses < Sensu::Plugin::Metric::CLI::Graphite
       mysql_shorthostname = mysql_host.split('.')[0]
       if config[:ini]
         ini = IniFile.load(config[:ini])
-        section = ini['client']
+        section = ini[config[:ini_section]]
         db_user = section['user']
         db_pass = section['password']
       else

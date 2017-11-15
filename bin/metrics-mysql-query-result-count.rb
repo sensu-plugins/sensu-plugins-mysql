@@ -49,6 +49,11 @@ class MysqlQueryCountMetric < Sensu::Plugin::Metric::CLI::Graphite
          long: '--ini VALUE',
          description: 'My.cnf ini file'
 
+  option :ini_section,
+         description: 'Section in my.cnf ini file',
+         long: '--ini-section VALUE',
+         default: 'client'
+
   option :socket,
          short: '-S SOCKET',
          long: '--socket SOCKET',
@@ -69,7 +74,7 @@ class MysqlQueryCountMetric < Sensu::Plugin::Metric::CLI::Graphite
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
-      section = ini['client']
+      section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
     else

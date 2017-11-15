@@ -35,6 +35,11 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          short: '-i',
          long: '--ini VALUE'
 
+  option :ini_section,
+         description: 'Section in my.cnf ini file',
+         long: '--ini-section VALUE',
+         default: 'client'
+
   option :size,
          short: '-s',
          long: '--size=VALUE',
@@ -72,7 +77,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
-      section = ini['client']
+      section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
     else
