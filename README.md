@@ -53,7 +53,7 @@ $ /opt/sensu/embedded/bin/check-mysql-connections.rb --host=<DBHOST> --ini=/etc/
 
 **check-mysql-alive** example
 ```bash
-$ /opt/sensu/embedded/bin/check-mysql-alive.rb --host=<DBHOST> --ini=/etc/sensu/my.ini
+$ /opt/sensu/embedded/bin/check-mysql-alive.rb --host=<DBHOST> --ini=/etc/sensu/my.ini --ini-section=customsection
 ```
 
 **check-mysql-disk** example (note: you must supply max disk size)

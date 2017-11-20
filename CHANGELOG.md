@@ -17,6 +17,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - metrics-mysql-processes.rb: Add support for custom section in inifile. (@oba11)
 - metrics-mysql-query-result-count.rb: Add support for custom section in inifile. (@oba11)
 - metrics-mysql-raw.rb: Add support for custom section in inifile. (@oba11)
+- README.md: update useage to have an example using the custom ini section (@majormoses)
 
 ## [2.1.2] - 2017-10-04
 ### Changed
