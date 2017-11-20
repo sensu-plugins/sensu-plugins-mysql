@@ -1,9 +1,11 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
+This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [2.2.0] - 2017-11-19
 ### Changed
 - check-mysql-alive.rb: Add support for custom section in inifile. (@oba11)
 - check-mysql-connections.rb: Add support for custom section in inifile. (@oba11)
@@ -18,6 +20,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - metrics-mysql-query-result-count.rb: Add support for custom section in inifile. (@oba11)
 - metrics-mysql-raw.rb: Add support for custom section in inifile. (@oba11)
 - README.md: update useage to have an example using the custom ini section (@majormoses)
+- update changelog guidelines location (@majormoses)
+
+### Fixed
+- misc spelling and whitespace (@majormoses)
 
 ## [2.1.2] - 2017-10-04
 ### Changed
@@ -104,7 +110,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...2.2.0
 [2.1.2]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.0.0...2.1.0
