@@ -115,7 +115,11 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
-      db_socket = section['socket']
+      if config[:socket]
+        db_socket = config[:socket]
+      else
+        db_socket = section['socket']
+      end
     else
       db_user = config[:user]
       db_pass = config[:password]
