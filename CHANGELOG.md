@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [2.1.1] - 2018-02-07
 ### Fixed
 - check-mysql-status.rb: if --socket flag is specified, it overrides config (@tinle)
 
@@ -113,7 +114,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.1...HEAD
+[2.2.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.0..2.2.1
 [2.2.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...2.2.0
 [2.1.2]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.1.0...2.1.1
