@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Fixed
+- check-mysql-status.rb: if --socket flag is specified, it overrides config (@tinle)
+
 ## [2.2.0] - 2017-11-19
 ### Changed
 - check-mysql-alive.rb: Add support for custom section in inifile. (@oba11)
