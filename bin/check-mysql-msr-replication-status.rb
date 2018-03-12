@@ -22,7 +22,7 @@ require 'sensu-plugin/check/cli'
 require 'mysql'
 require 'inifile'
 
-class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
+class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
   option :host,
          short: '-h',
          long: '--host=VALUE',
@@ -100,65 +100,68 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     end
 
     begin
-	
-	  okStatuses = Array.new
+
+      okStatuses = Array.new
       warnStatuses = Array.new
       critStatuses = Array.new
       output = Array.new
-	  
+	
       db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
-	  channels = db.query("SELECT channel_name FROM performance_schema.replication_connection_status")
-	  n_channels = channels.num_rows
-	  
-	  n_channels.times do
-	      channel = channels.fetch_row.to_s
-		  results = con.query("SHOW SLAVE STATUS FOR CHANNEL \'#{channel}\'")
-		  
-		  results.each_hash do |row|
-		      ioThreadStatus = row['Slave_IO_Running']
-              sqlThreadStatus = row['Slave_SQL_Running']
-              secondsBehindMaster = row['Seconds_Behind_Master'].to_i
-              status = 0
-			  
-			  if ioThreadStatus == 'No' || sqlThreadStatus == 'No' || secondsBehindMaster > config[:crit]
-			      status = 2
-			  end
-			  
-			  if secondsBehindMaster > config[:warn] &&
-			      secondsBehindMaster <= config[:crit]
-			      status = 1
-			  end
-			  
-			  message += "#{channel} STATES:"
-			  message += " Slave_IO_Running=#{ioThreadStatus}"
-			  message += ", Slave_SQL_Running=#{sqlThreadStatus}"
-			  message += ", Seconds_Behind_Master=#{secondsBehindMaster}\n"
-			  
-          	#  message = "#{channel}=io:#{ioThreadStatus},sql:#{sqlThreadStatus},behind:#{secondsBehindMaster}\n"
-			  if status == 0
-			      okStatuses << message
-			  elsif
-			      warnStatuses << message
-			  elsif
-			      critStatuses << message
-			  else
-			      puts "Undefined status."
-			  end
-		  end
-	  
-	  end
-	  
-	  output << critStatuses if critStatuses.length > 0
+      channels = db.query('SELECT channel_name FROM performance_schema.replication_connection_status')
+
+      channels.num_rows.times do
+        channel = channels.fetch_hash
+        results = db.query("SHOW SLAVE STATUS FOR CHANNEL \'#{channel['channel_name']}\'")
+        results.each_hash do |row|
+          ioThreadStatus = row['Slave_IO_Running']
+          sqlThreadStatus = row['Slave_SQL_Running']
+          secondsBehindMaster = row['Seconds_Behind_Master'].to_i
+          status = 0
+          if ioThreadStatus == 'No' || sqlThreadStatus == 'No' || secondsBehindMaster > config[:crit]
+              status = 2
+          end
+          if secondsBehindMaster > config[:warn] &&
+             secondsBehindMaster <= config[:crit]
+             status =1
+          end
+          message = "#{channel['channel_name']} STATES:"
+          message += " Slave_IO_Running=#{ioThreadStatus}"
+          message += ", Slave_SQL_Running=#{sqlThreadStatus}"
+          message += ", Seconds_Behind_Master=#{secondsBehindMaster}"
+          
+          if status == 0
+             okStatuses << message
+          elsif status == 1
+              warnStatuses << message
+          elsif status == 2
+              critStatuses << message
+          else
+             puts "Undefined status."
+          end
+        end
+      end 
+      output << critStatuses if critStatuses.length > 0
       output << warnStatuses if warnStatuses.length > 0
       output << okStatuses  if okStatuses.length > 0
+
+      if critStatuses.length > 0
+         critical output
+      elsif warnStatuses.length > 0
+         warning output
+      else
+         ok output
+      end
+ #     output << critStatuses if critStatuses.length > 0
+ #     output << warnStatuses if warnStatuses.length > 0
+#      output << okStatuses  if okStatuses.length > 0
 	  
-	  if critStatuses.length > 0
-	      critical output
-	  elsif warnStatuses.length > 0
-	      warning output
-	  else
-	      ok output
-	  end
+#	  if critStatuses.length > 0
+#	      critical output
+#	  elsif warnStatuses.length > 0
+#	      warning output
+#	  else
+#	      ok output
+#	  end
 	  
       
 
