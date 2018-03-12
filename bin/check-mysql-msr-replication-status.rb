@@ -150,20 +150,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
          warning output
       else
          ok output
-      end
- #     output << critStatuses if critStatuses.length > 0
- #     output << warnStatuses if warnStatuses.length > 0
-#      output << okStatuses  if okStatuses.length > 0
-	  
-#	  if critStatuses.length > 0
-#	      critical output
-#	  elsif warnStatuses.length > 0
-#	      warning output
-#	  else
-#	      ok output
-#	  end
-	  
-      
+      end 
 
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
