@@ -110,7 +110,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
 	  channels = db.query("SELECT channel_name FROM performance_schema.replication_connection_status")
 	  n_channels = channels.num_rows
 	  
-	  n_channles.times do
+	  n_channels.times do
 	      channel = channels.fetch_row.to_s
 		  results = con.query("SHOW SLAVE STATUS FOR CHANNEL \'#{channel}\'")
 		  
