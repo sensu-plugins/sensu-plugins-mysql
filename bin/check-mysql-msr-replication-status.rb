@@ -99,7 +99,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
       warn_statuses = []
       crit_statuses = []
       output = []
-	
+
       db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
       channels = db.query('SELECT channel_name FROM performance_schema.replication_connection_status')
 
@@ -122,7 +122,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           message += " Slave_IO_Running=#{io_thread_status}"
           message += ", Slave_SQL_Running=#{sql_thread_status}"
           message += ", Seconds_Behind_Master=#{seconds_behind_master}"
- 
+
           if status == 0
             ok_statuses << message
           elsif status == 1
@@ -134,16 +134,16 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           end
         end
       end
-      output << crit_statuses if crit_statuses.!empty?
-      output << warn_statuses if warn_statuses.!empty?
-      output << ok_statuses  if ok_statuses.!empty?
+      output << crit_statuses unless crit_statuses.empty?
+      output << warn_statuses unless warn_statuses.empty?
+      output << ok_statuses unless ok_statuses.empty?
 
       if crit_statuses.!empty?
-         critical output
+        critical output
       elsif warn_statuses.!empty?
-         warning output
+        warning output
       else
-         ok output
+        ok output
       end
 
     rescue Mysql::Error => e
