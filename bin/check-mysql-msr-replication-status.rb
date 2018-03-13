@@ -51,11 +51,6 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
          long: '--password=VALUE',
          description: 'Database password'
 
-  option :master_connection,
-         short: '-m',
-         long: '--master-connection=VALUE',
-         description: 'Replication master connection name'
-
   option :ini,
          short: '-i',
          long: '--ini VALUE',
@@ -93,7 +88,6 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
       db_pass = config[:pass]
     end
     db_host = config[:host]
-    db_conn = config[:master_connection]
 
     if [db_host, db_user, db_pass].any?(&:nil?)
       unknown 'Must specify host, user, password'
@@ -101,10 +95,10 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
 
     begin
 
-      okStatuses = Array.new
-      warnStatuses = Array.new
-      critStatuses = Array.new
-      output = Array.new
+      ok_statuses = []
+      warn_statuses = []
+      crit_statuses = []
+      output = []
 	
       db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
       channels = db.query('SELECT channel_name FROM performance_schema.replication_connection_status')
@@ -113,44 +107,44 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
         channel = channels.fetch_hash
         results = db.query("SHOW SLAVE STATUS FOR CHANNEL \'#{channel['channel_name']}\'")
         results.each_hash do |row|
-          ioThreadStatus = row['Slave_IO_Running']
-          sqlThreadStatus = row['Slave_SQL_Running']
-          secondsBehindMaster = row['Seconds_Behind_Master'].to_i
+          io_thread_status = row['Slave_IO_Running']
+          sql_thread_status = row['Slave_SQL_Running']
+          seconds_behind_master = row['Seconds_Behind_Master'].to_i
           status = 0
-          if ioThreadStatus == 'No' || sqlThreadStatus == 'No' || secondsBehindMaster > config[:crit]
-              status = 2
+          if io_thread_status == 'No' || sql_thread_status == 'No' || seconds_behind_master > config[:crit]
+            status = 2
           end
-          if secondsBehindMaster > config[:warn] &&
-             secondsBehindMaster <= config[:crit]
-             status =1
+          if seconds_behind_master > config[:warn] &&
+             seconds_behind_master <= config[:crit]
+            status = 1
           end
           message = "#{channel['channel_name']} STATES:"
-          message += " Slave_IO_Running=#{ioThreadStatus}"
-          message += ", Slave_SQL_Running=#{sqlThreadStatus}"
-          message += ", Seconds_Behind_Master=#{secondsBehindMaster}"
-          
+          message += " Slave_IO_Running=#{io_thread_status}"
+          message += ", Slave_SQL_Running=#{sql_thread_status}"
+          message += ", Seconds_Behind_Master=#{seconds_behind_master}"
+ 
           if status == 0
-             okStatuses << message
+            ok_statuses << message
           elsif status == 1
-              warnStatuses << message
+            warn_statuses << message
           elsif status == 2
-              critStatuses << message
+            crit_statuses << message
           else
-             puts "Undefined status."
+            puts 'Undefined status.'
           end
         end
-      end 
-      output << critStatuses if critStatuses.length > 0
-      output << warnStatuses if warnStatuses.length > 0
-      output << okStatuses  if okStatuses.length > 0
+      end
+      output << crit_statuses if crit_statuses.!empty?
+      output << warn_statuses if warn_statuses.!empty?
+      output << ok_statuses  if ok_statuses.!empty?
 
-      if critStatuses.length > 0
+      if crit_statuses.!empty?
          critical output
-      elsif warnStatuses.length > 0
+      elsif warn_statuses.!empty?
          warning output
       else
          ok output
-      end 
+      end
 
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
