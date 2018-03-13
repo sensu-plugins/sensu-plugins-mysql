@@ -17,6 +17,7 @@
  * bin/check-mysql-innodb-lock.rb
  * bin/check-mysql-threads.rb
  * bin/check-mysql-query-result-count.rb
+ * bin/check-mysql-msr-replication-status.rb
  * bin/metrics-mysql-graphite.rb
  * bin/metrics-mysql-processes.rb
  * bin/metrics-mysql-raw.rb
@@ -76,6 +77,11 @@ $ /opt/sensu/embedded/bin/check-mysql-threads.rb --host=<DBHOST> --ini=/etc/sens
 $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
 ```
 
+**check-mysql-msr-replication-status** example
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
+```
+
 **check-mysql-query-result-count** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 1 --critical 10 --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
@@ -98,6 +104,7 @@ In keeping with the principle of least privilege you should create a new user wi
 | check-mysql-innodb-lock.rb             | `PROCESS`                                                 |
 | check-mysql-query-result-count.rb      | depends on query                                          |
 | check-mysql-replication-status.rb      | `SUPER` OR `REPLICATION_CLIENT` (the latter is preferable)|
+| check-mysql-msr-replication-status.rb  | `SELECT`                                                  |
 | check-mysql-status.rb                  | `SELECT`                                                  |
 | check-mysql-threads.rb                 | `SELECT`                                                  |
 | metrics-mysql-graphite.rb              | `SELECT`                                                  |
