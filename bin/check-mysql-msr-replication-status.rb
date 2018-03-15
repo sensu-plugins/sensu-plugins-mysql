@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 #
-# MySQL MultiSource Replication Status
+# MySQL Multi-source Replication Status
 # ===
 #
 #
 #   EXAMPLE
-#     mysql-alive.rb -h db01 --ini '/etc/sensu/my.cnf'
-#     mysql-alive.rb -h db01 --ini '/etc/sensu/my.cnf' --ini-section customsection
+#     check-mysql-msr-replication-status.rb -h db01 --ini '/etc/sensu/my.cnf'
+#     check-mysql-msr-replication-status.rb -h db01 --ini '/etc/sensu/my.cnf' --ini-section customsection
 #
 #   MY.CNF INI FORMAT
 #   [client]
@@ -25,16 +25,15 @@ require 'inifile'
 class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
   option :host,
          short: '-h',
-         long: '--host=VALUE',
+         long: '--host VALUE',
          description: 'Database host'
 
   option :port,
          short: '-P',
-         long: '--port=VALUE',
+         long: '--port VALUE',
          description: 'Database port',
          default: 3306,
-         # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc(&:to_i)
 
   option :socket,
          short: '-s SOCKET',
@@ -43,12 +42,12 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
 
   option :user,
          short: '-u',
-         long: '--username=VALUE',
+         long: '--username VALUE',
          description: 'Database username'
 
   option :pass,
          short: '-p',
-         long: '--password=VALUE',
+         long: '--password VALUE',
          description: 'Database password'
 
   option :ini,
@@ -63,19 +62,17 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
 
   option :warn,
          short: '-w',
-         long: '--warning=VALUE',
+         long: '--warning VALUE',
          description: 'Warning threshold for replication lag',
          default: 900,
-         # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc(&:to_i)
 
   option :crit,
          short: '-c',
          long: '--critical=VALUE',
          description: 'Critical threshold for replication lag',
          default: 1800,
-         # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc(&:to_i)
 
   def run
     if config[:ini]
@@ -114,8 +111,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           if io_thread_status == 'No' || sql_thread_status == 'No' || seconds_behind_master > config[:crit]
             status = 2
           end
-          if seconds_behind_master > config[:warn] &&
-             seconds_behind_master <= config[:crit]
+          if seconds_behind_master > config[:warn] && seconds_behind_master <= config[:crit]
             status = 1
           end
           message = "#{channel['channel_name']} STATES:"
@@ -138,9 +134,9 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
       output << warn_statuses unless warn_statuses.empty?
       output << ok_statuses unless ok_statuses.empty?
 
-      if crit_statuses.!empty?
+      if !crit_statuses.empty?
         critical output
-      elsif warn_statuses.!empty?
+      elsif !warn_statuses.empty?
         warning output
       else
         ok output
@@ -148,10 +144,11 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
 
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
-      critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
+      errstr += "SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
+      critical errstr
 
     rescue => e
-      critical e
+      critical "unhandled exception: #{e}"
 
     ensure
       db.close if db
