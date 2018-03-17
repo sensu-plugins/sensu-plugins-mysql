@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- check-mysql-msr-replication-status.rb: new script that helps with monitoring mysql multi-source replication (@ndelic0)
 
 ## [2.1.1] - 2018-02-07
 ### Fixed
