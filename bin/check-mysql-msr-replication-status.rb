@@ -91,7 +91,6 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
     end
 
     begin
-
       ok_statuses = []
       warn_statuses = []
       crit_statuses = []
@@ -119,7 +118,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           message += ", Slave_SQL_Running=#{sql_thread_status}"
           message += ", Seconds_Behind_Master=#{seconds_behind_master}"
 
-          if status == 0
+          if status.zero?
             ok_statuses << message
           elsif status == 1
             warn_statuses << message
@@ -141,15 +140,12 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
       else
         ok output
       end
-
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
       errstr += "SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
       critical errstr
-
-    rescue => e
+    rescue StandardError => e
       critical "unhandled exception: #{e}"
-
     ensure
       db.close if db
     end
