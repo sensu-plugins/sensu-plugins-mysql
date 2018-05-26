@@ -90,7 +90,7 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
       db_user = config[:username]
       db_pass = config[:password]
     end
-    raise "invalid query : #{config[:query]}" unless config[:query].match(/^select\s+count\(\s*\*\s*\)/)
+    raise "invalid query : #{config[:query]}" unless config[:query].match(/^select\s+count\(\s*\*\s*\)/i)
 
     db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
 
