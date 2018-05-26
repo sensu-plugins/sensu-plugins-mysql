@@ -90,11 +90,11 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
       db_user = config[:username]
       db_pass = config[:password]
     end
-    raise "invalid query : #{config[:query]}" unless config[:query].match(/^select\s+count\(\s*\*\s*\)/i)
+    raise "invalid query : #{config[:query]}" unless config[:query] =~ /^select\s+count\(\s*\*\s*\)/i
 
     db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
 
-    count = db.query(config[:query]).fetch_row()[0].to_i
+    count = db.query(config[:query]).fetch_row[0].to_i
     if count >= config[:crit]
       critical "Count is above the CRITICAL limit: #{count} count / #{config[:crit]} limit"
     elsif count >= config[:warn]
