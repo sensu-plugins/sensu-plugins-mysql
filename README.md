@@ -109,6 +109,7 @@ In keeping with the principle of least privilege you should create a new user wi
 | check-mysql-disk.rb                    | `SELECT`                                                  |
 | check-mysql-innodb-lock.rb             | `PROCESS`                                                 |
 | check-mysql-query-result-count.rb      | depends on query                                          |
+| check-mysql-select-count.rb            | `SELECT`                                                  |
 | check-mysql-replication-status.rb      | `SUPER` OR `REPLICATION_CLIENT` (the latter is preferable)|
 | check-mysql-msr-replication-status.rb  | `SELECT`                                                  |
 | check-mysql-status.rb                  | `SELECT`                                                  |
