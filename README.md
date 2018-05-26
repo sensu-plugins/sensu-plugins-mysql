@@ -17,6 +17,7 @@
  * bin/check-mysql-innodb-lock.rb
  * bin/check-mysql-threads.rb
  * bin/check-mysql-query-result-count.rb
+ * bin/check-mysql-select-count.rb
  * bin/check-mysql-msr-replication-status.rb
  * bin/metrics-mysql-graphite.rb
  * bin/metrics-mysql-processes.rb
@@ -85,6 +86,11 @@ $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini
 **check-mysql-query-result-count** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 1 --critical 10 --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
+```
+
+**check-mysql-select-count** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-select-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 30000 --critical 50000 --query 'SELECT count(*) FROM table t'
 ```
 
 **metrics-mysql-query-result-count** example
