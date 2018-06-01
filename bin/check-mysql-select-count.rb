@@ -106,8 +106,8 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
 
-  rescue => e
-    critical e
+  rescue StandardError => e
+    critical "unhandled exception: #{e}"
 
   ensure
     db.close if db
