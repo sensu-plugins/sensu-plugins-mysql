@@ -62,14 +62,14 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
   option :warn,
          short: '-w COUNT',
          long: '--warning COUNT',
-         description: 'COUNT warning threshold for number of items returned by the query',
+         description: 'Warning when query value exceeds threshold',
          proc: proc(&:to_i),
          required: true
 
   option :crit,
          short: '-c COUNT',
          long: '--critical COUNT',
-         description: 'COUNT critical threshold for number of items returned by the query',
+         description: 'Critical when query value exceeds threshold',
          proc: proc(&:to_i),
          required: true
 
