@@ -36,7 +36,7 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
   option :password,
          short: '-p PASSWORD',
          long: '--pass PASSWORD',
-         description: 'MySQL password',
+         description: 'MySQL password'
 
   option :database,
          short: '-d DATABASE',
