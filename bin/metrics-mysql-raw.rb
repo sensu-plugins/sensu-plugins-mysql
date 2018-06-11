@@ -189,7 +189,8 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Qcache_hits' =>              'cacheHits',
         'Qcache_inserts' =>           'inserts',
         'Qcache_not_cached' =>        'notCached',
-        'Qcache_lowmem_prunes' =>     'lowMemPrunes'
+        'Qcache_lowmem_prunes' =>     'lowMemPrunes',
+        'Qcache_free_memory' =>       'freeMemory'
       },
       'commands' => {
         'Com_admin_commands' => 'admin_commands',
