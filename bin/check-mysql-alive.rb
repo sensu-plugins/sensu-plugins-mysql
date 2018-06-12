@@ -48,7 +48,7 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
 
   option :ini,
          description: 'My.cnf ini file',
-         short: '-i',
+         short: '-i VALUE',
          long: '--ini VALUE'
 
   option :ini_section,
