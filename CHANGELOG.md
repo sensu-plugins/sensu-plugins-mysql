@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [2.5.0] - 2018-06-12
 ### Added
 - metrics-mysql-raw.rb: added `Qcache_free_memory` collection (@alchandia)
 
@@ -128,7 +129,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.4.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.0...HEAD
+[2.5.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.0..2.2.1
