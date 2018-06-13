@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- metrics-mysql-raw.rb: added `Qcache_free_memory` collection (@alchandia)
+
 ## [2.4.0] - 2018-06-4
 ### Added
 - Add check-mysql-select-count.rb script (@negachov)
