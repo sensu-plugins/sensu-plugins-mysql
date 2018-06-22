@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [2.5.1] - 2018-06-21
 ### Fixed
 - check-mysql-alive.rb: allow specifying a value for `-i` (@scones)
 
@@ -132,7 +133,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.1...HEAD
+[2.5.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.2.1...2.3.0
