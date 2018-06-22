@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Fixed
+- check-mysql-alive.rb: allow specifying a value for `-i` (@scones)
+
 ## [2.5.0] - 2018-06-12
 ### Added
 - metrics-mysql-raw.rb: added `Qcache_free_memory` collection (@alchandia)
