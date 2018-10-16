@@ -123,6 +123,7 @@ In keeping with the principle of least privilege you should create a new user wi
 | metrics-mysql-graphite.rb              | `SELECT`                                                  |
 | metrics-mysql-processes.rb             | `SELECT`                                                  |
 | metrics-mysql-query-result-count.rb    | depends on query                                          |
+| metrics-mysql-select-count.rb          | depends on query                                          |
 | metrics-mysql-raw.rb                   | `SELECT`                                                  |
 | metrics-mysql.rb                       | `INSERT` into `sensumetrics.sensu_historic_metrics`       |
 
