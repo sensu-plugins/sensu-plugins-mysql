@@ -24,6 +24,7 @@
  * bin/metrics-mysql-raw.rb
  * bin/metrics-mysql.rb
  * bin/metrics-mysql-query-result-count.rb
+ * bin/metrics-mysql-select-count.rb
  * bin/mysql-metrics.sql
 
 ## Usage
@@ -96,6 +97,11 @@ $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini
 **metrics-mysql-query-result-count** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
+```
+
+**metrics-mysql-select-count** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-select-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT COUNT(*) FROM table t'
 ```
 
 ### Security
