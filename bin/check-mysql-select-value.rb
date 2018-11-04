@@ -6,6 +6,7 @@
 #
 # Copyright 2017 Andrew Thal <athal7@me.com> to check-mysql-query-result-count.rb
 # Modified by Mutsutoshi Yoshimoto <negachov@gmail.com> 2018 to select count(*) version
+# Modified by Jan Kunzmann <jan-github@phobia.de> 2018 to select value version
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
@@ -60,24 +61,25 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
          description: 'MySQL Unix socket to connect to'
 
   option :warn,
-         short: '-w COUNT',
-         long: '--warning COUNT',
+         short: '-w VALUE',
+         long: '--warning VALUE',
          description: 'Warning when query value exceeds threshold',
-         proc: proc(&:to_i),
+         proc: proc(&:to_f),
          required: true
 
   option :crit,
-         short: '-c COUNT',
-         long: '--critical COUNT',
+         short: '-c VALUE',
+         long: '--critical VALUE',
          description: 'Critical when query value exceeds threshold',
-         proc: proc(&:to_i),
+         proc: proc(&:to_f),
          required: true
 
   option :query,
-         short: '-q SELECT_COUNT_QUERY',
-         long: '--query SELECT_COUNT_QUERY',
+         short: '-q SELECT_VALUE_QUERY',
+         long: '--query SELECT_VALUE_QUERY',
          description: 'Query to execute',
          required: true
+
 
   def run
     if config[:ini]
@@ -89,17 +91,31 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
       db_user = config[:username]
       db_pass = config[:password]
     end
-    raise "invalid query : #{config[:query]}" unless config[:query] =~ /^select\s+count\(\s*\*\s*\)/i
 
     db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port], config[:socket])
 
-    count = db.query(config[:query]).fetch_row[0].to_i
-    if count >= config[:crit]
-      critical "Count is above the CRITICAL limit: #{count} count / #{config[:crit]} limit"
-    elsif count >= config[:warn]
-      warning "Count is above the WARNING limit: #{count} count / #{config[:warn]} limit"
+    rs = db.query(config[:query])
+    fields = rs.fetch_fields
+    col_name = fields[0].name.capitalize
+
+    value = rs.fetch_row[0].to_f
+
+    if config[:crit] > config[:warn]
+      beyond = "above"
+      beneath = "below"
+      factor = 1.0
     else
-      ok "Count is below thresholds : #{count} count"
+      beyond = "below"
+      beneath = "above"
+      factor = -1.0
+    end
+
+    if value * factor >= config[:crit] * factor
+      critical "#{col_name} #{value} is #{beyond} the CRITICAL limit of #{config[:crit]}"
+    elsif value * factor >= config[:warn] * factor
+      warning "#{col_name} #{value} is #{beyond} the WARNING limit of #{config[:warn]}"
+    else
+      ok "#{col_name} #{value} is #{beneath} thresholds"
     end
 
   rescue Mysql::Error => e
@@ -107,7 +123,7 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
 
   rescue StandardError => e
-    critical "unhandled exception: #{e}"
+    critical "Unhandled exception: #{e}"
 
   ensure
     db.close if db
