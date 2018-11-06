@@ -1,20 +1,21 @@
 #!/usr/bin/env ruby
 #
-# MySQL Select Count Check
+# MySQL Select Count Metric
 #
-# Checks the length of a result set from a MySQL query.
+# Creates a graphite-formatted metric for the first value of a result set from a MySQL query.
 #
-# Copyright 2017 Andrew Thal <athal7@me.com> to check-mysql-query-result-count.rb
-# Modified by Mutsutoshi Yoshimoto <negachov@gmail.com> 2018 to select count(*) version
+# Copyright 2017 Andrew Thal <athal7@me.com>
+# Copyright 2018 Tibor Nagy <nagyt@hu.inter.net>
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details.
 
-require 'sensu-plugin/check/cli'
+require 'sensu-plugin/metric/cli'
 require 'mysql'
 require 'inifile'
+require 'json'
 
-class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
+class MysqlQueryCountMetric < Sensu::Plugin::Metric::CLI::Graphite
   option :host,
          short: '-h HOST',
          long: '--host HOST',
@@ -42,7 +43,7 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
          short: '-d DATABASE',
          long: '--database DATABASE',
          description: 'MySQL database',
-         required: true
+         default: ''
 
   option :ini,
          short: '-i',
@@ -59,24 +60,16 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
          long: '--socket SOCKET',
          description: 'MySQL Unix socket to connect to'
 
-  option :warn,
-         short: '-w COUNT',
-         long: '--warning COUNT',
-         description: 'Warning when query value exceeds threshold',
-         proc: proc(&:to_i),
-         required: true
-
-  option :crit,
-         short: '-c COUNT',
-         long: '--critical COUNT',
-         description: 'Critical when query value exceeds threshold',
-         proc: proc(&:to_i),
-         required: true
+  option :name,
+         short: '-n NAME',
+         long: '--name NAME',
+         description: 'Metric name for a configured handler',
+         default: 'mysql.query_count'
 
   option :query,
          short: '-q SELECT_COUNT_QUERY',
          long: '--query SELECT_COUNT_QUERY',
-         description: 'Query to execute',
+         description: 'Queries to execute in JSON',
          required: true
 
   def run
@@ -89,18 +82,24 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
       db_user = config[:username]
       db_pass = config[:password]
     end
-    raise "invalid query : #{config[:query]}" unless config[:query] =~ /^select\s+count\(\s*\*\s*\)/i
 
-    db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port], config[:socket])
-
-    count = db.query(config[:query]).fetch_row[0].to_i
-    if count >= config[:crit]
-      critical "Count is above the CRITICAL limit: #{count} count / #{config[:crit]} limit"
-    elsif count >= config[:warn]
-      warning "Count is above the WARNING limit: #{count} count / #{config[:warn]} limit"
-    else
-      ok "Count is below thresholds : #{count} count"
+    begin
+      query_hash = ::JSON.parse config[:query]
+    rescue ::JSON::ParserError => e
+      critical "JSON.parse error: #{e}"
     end
+
+    # traverse all SQL
+    query_hash.each do |key, sql|
+      raise "invalid query : #{sql}" unless sql =~ /^select\s+count\(\s*\*\s*\)/i
+
+      db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port], config[:socket])
+      count = db.query(sql).fetch_row[0].to_i
+
+      output "#{config[:name]}.#{key}", count
+    end
+
+    ok
 
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
@@ -109,7 +108,5 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
   rescue StandardError => e
     critical "unhandled exception: #{e}"
 
-  ensure
-    db.close if db
   end
 end
