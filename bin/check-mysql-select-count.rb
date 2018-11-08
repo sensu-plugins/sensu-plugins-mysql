@@ -19,7 +19,6 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
          short: '-h HOST',
          long: '--host HOST',
          description: 'MySQL Host to connect to',
-         required: true
 
   option :port,
          short: '-P PORT',
@@ -85,11 +84,13 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
       section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
+      config[:host] = section['host']
+      config[:socket] = section['socket']
     else
       db_user = config[:username]
       db_pass = config[:password]
     end
-    raise "invalid query : #{config[:query]}" unless config[:query] =~ /^select\s+count\(\s*\*\s*\)/i
+    raise "Please specify hostname using -h or in mysql.cnf file" unless config[:host]
 
     db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port], config[:socket])
 
