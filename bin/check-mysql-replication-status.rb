@@ -93,6 +93,24 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
+  def detect_replication_status?(row)
+    %w[
+      Slave_IO_State
+      Slave_IO_Running
+      Slave_SQL_Running
+      Last_IO_Error
+      Last_SQL_Error
+      Seconds_Behind_Master
+    ].all? { |key| row.key? key }
+  end
+
+  def slave_running?(row)
+    %w[
+      Slave_IO_Running
+      Slave_SQL_Running
+    ].all? { |key| row[key] =~ /Yes/ }
+  end
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -121,14 +139,9 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
 
       unless results.nil?
         results.each_hash do |row|
-          warn "couldn't detect replication status" unless
-            %w(Slave_IO_State Slave_IO_Running Slave_SQL_Running Last_IO_Error Last_SQL_Error Seconds_Behind_Master).all? do |key|
-              row.key? key
-            end
+          warn "couldn't detect replication status" unless detect_replication_status?(row)
 
-          slave_running = %w(Slave_IO_Running Slave_SQL_Running).all? do |key|
-            row[key] =~ /Yes/
-          end
+          slave_running = slave_running?(row)
 
           output = if db_conn.nil?
                      'Slave not running!'
@@ -160,14 +173,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
         end
         ok 'show slave status was nil. This server is not a slave.'
       end
-
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
       critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
-
-    rescue => e
+    rescue StandardError => e
       critical e
-
     ensure
       db.close if db
     end

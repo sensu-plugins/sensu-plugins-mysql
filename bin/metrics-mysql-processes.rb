@@ -94,33 +94,40 @@ class MetricsMySQLProcesses < Sensu::Plugin::Metric::CLI::Graphite
          long: '--socket SOCKET',
          description: 'MySQL Unix socket to connect to'
 
+  def set_default_metrics
+    {
+      'user' => {},
+      'database' => {},
+      'command' => {},
+    }.each_value { |value| value.default = 0 }
+  end
+
+  def db_connection_creds
+    if config[:ini]
+      ini = IniFile.load(config[:ini])
+      section = ini[config[:ini_section]]
+      db_user = section['user']
+      db_pass = section['password']
+    else
+      db_user = config[:username]
+      db_pass = config[:password]
+    end
+    [db_user, db_pass]
+  end
+
   def run
     config[:host].split(' ').each do |mysql_host|
       mysql_shorthostname = mysql_host.split('.')[0]
-      if config[:ini]
-        ini = IniFile.load(config[:ini])
-        section = ini[config[:ini_section]]
-        db_user = section['user']
-        db_pass = section['password']
-      else
-        db_user = config[:username]
-        db_pass = config[:password]
-      end
+      db_user, db_pass = db_connection_creds
       begin
         mysql = Mysql.new(mysql_host, db_user, db_pass, nil, config[:port], config[:socket])
 
         results = mysql.query('SHOW PROCESSLIST')
-      rescue => e
+      rescue StandardError => e
         unknown "Unable to query MySQL: #{e.message}"
       end
 
-      metrics = {
-        'user' => {},
-        'database' => {},
-        'command' => {}
-      }
-
-      metrics.each_value { |value| value.default = 0 }
+      metrics = set_default_metrics
 
       results.each_hash do |row|
         metrics['user'][row['User']] += 1

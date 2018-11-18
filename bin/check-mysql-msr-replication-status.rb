@@ -74,6 +74,16 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
          default: 1800,
          proc: proc(&:to_i)
 
+  def set_status(io_thread_status, sql_thread_status, seconds_behind_master)
+    if io_thread_status == 'No' || sql_thread_status == 'No' || seconds_behind_master > config[:crit]
+      2
+    elsif seconds_behind_master > config[:warn] && seconds_behind_master <= config[:crit]
+      1
+    else
+      0
+    end
+  end
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -106,19 +116,13 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           io_thread_status = row['Slave_IO_Running']
           sql_thread_status = row['Slave_SQL_Running']
           seconds_behind_master = row['Seconds_Behind_Master'].to_i
-          status = 0
-          if io_thread_status == 'No' || sql_thread_status == 'No' || seconds_behind_master > config[:crit]
-            status = 2
-          end
-          if seconds_behind_master > config[:warn] && seconds_behind_master <= config[:crit]
-            status = 1
-          end
+          status = set_status
           message = "#{channel['channel_name']} STATES:"
           message += " Slave_IO_Running=#{io_thread_status}"
           message += ", Slave_SQL_Running=#{sql_thread_status}"
           message += ", Seconds_Behind_Master=#{seconds_behind_master}"
 
-          if status.zero?
+          if status == 0
             ok_statuses << message
           elsif status == 1
             warn_statuses << message

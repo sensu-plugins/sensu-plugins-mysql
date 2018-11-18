@@ -90,10 +90,8 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
          long: '--verbose',
          boolean: true
 
-  def run
-    # props to https://github.com/coredump/hoardd/blob/master/scripts-available/mysql.coffee
-
-    metrics = {
+  def metrics_hash
+    {
       'general' => {
         'Bytes_received' =>         'rxBytes',
         'Bytes_sent' =>             'txBytes',
@@ -117,14 +115,14 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         'Select_range' =>           'selectRange',
         'Select_range_check' =>     'selectRange_check',
         'Select_scan' =>            'selectScan',
-        'Slow_queries' =>           'slowQueries'
+        'Slow_queries' =>           'slowQueries',
       },
       'querycache' => {
         'Qcache_queries_in_cache' =>  'queriesInCache',
         'Qcache_hits' =>              'cacheHits',
         'Qcache_inserts' =>           'inserts',
         'Qcache_not_cached' =>        'notCached',
-        'Qcache_lowmem_prunes' =>     'lowMemPrunes'
+        'Qcache_lowmem_prunes' =>     'lowMemPrunes',
       },
       'commands' => {
         'Com_admin_commands' => 'admin_commands',
@@ -159,7 +157,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         'Com_lock_tables' =>    'lock_tables',
         'Com_show_create_table' => 'show_create_table',
         'Com_unlock_tables' =>  'unlock_tables',
-        'Com_alter_table' =>    'alter_table'
+        'Com_alter_table' =>    'alter_table',
       },
       'counters' => {
         'Handler_write' =>              'handlerWrite',
@@ -174,7 +172,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         'Handler_commit' =>             'handlerCommit',
         'Handler_rollback' =>           'handlerRollback',
         'Handler_savepoint' =>          'handlerSavepoint',
-        'Handler_savepoint_rollback' => 'handlerSavepointRollback'
+        'Handler_savepoint_rollback' => 'handlerSavepointRollback',
       },
       'innodb' => {
         'Innodb_buffer_pool_pages_total' =>   'bufferTotal_pages',
@@ -195,15 +193,22 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         'Innodb_rows_updated' =>              'rowsUpdated',
         'Innodb_rows_read' =>                 'rowsRead',
         'Innodb_rows_deleted' =>              'rowsDeleted',
-        'Innodb_rows_inserted' =>             'rowsInserted'
+        'Innodb_rows_inserted' =>             'rowsInserted',
       },
       'configuration' => {
         'max_connections'         =>          'MaxConnections',
-        'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount'
-      }
+        'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount',
+      },
     }
+  end
 
-    config[:host].split(' ').each do |mysql_host|
+  def run
+    # props to https://github.com/coredump/hoardd/blob/master/scripts-available/mysql.coffee
+
+    metrics = metrics_hash
+
+    # FIXME: break this up
+    config[:host].split(' ').each do |mysql_host| # rubocop:disable Metrics/BlockLength
       mysql_shorthostname = mysql_host.split('.')[0]
       if config[:ini]
         ini = IniFile.load(config[:ini])
@@ -218,7 +223,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         mysql = Mysql.new(mysql_host, db_user, db_pass, nil, config[:port], config[:socket])
 
         results = mysql.query('SHOW GLOBAL STATUS')
-      rescue => e
+      rescue StandardError => e
         puts e.message
       end
 
@@ -241,7 +246,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
             output "#{config[:scheme]}.#{mysql_shorthostname}.general.#{metrics['general'][key]}", value
           end
         end
-      rescue => e
+      rescue StandardError => e
         puts "Error querying slave status: #{e}" if config[:verbose]
       end
 
@@ -251,12 +256,12 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         category = 'configuration'
         variables_results.each_hash do |row|
           metrics[category].each do |metric, desc|
-            if metric.casecmp(row['Variable_name']) == 0
+            if metric.casecmp(row['Variable_name']).zero?
               output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{desc}", row['Value']
             end
           end
         end
-      rescue => e
+      rescue StandardError => e
         puts e.message
       end
 
