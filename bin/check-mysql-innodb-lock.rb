@@ -140,7 +140,6 @@ class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
     else
       critical "Detected Locks #{lock_info}"
     end
-
   rescue Mysql::Error => e
     critical "MySQL check failed: #{e.error}"
   ensure

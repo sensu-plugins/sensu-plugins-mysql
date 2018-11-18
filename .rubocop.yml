@@ -31,3 +31,14 @@ Style/Documentation:
 
 Style/Next:
   Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+# TODO: when we bump RC this should be:
+# Style/TrailingCommaInHashLiteral:
+#   Enabled: true
+# Style/TrailingCommaInArrayLiteral:
+#   Enabled: true
+Style/TrailingCommaInLiteral:
+  Enabled: false

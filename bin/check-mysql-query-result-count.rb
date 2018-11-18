@@ -99,14 +99,11 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
     else
       ok 'Result count length is below thresholds'
     end
-
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
-
-  rescue => e
+  rescue StandardError => e
     critical e
-
   ensure
     db.close if db
   end

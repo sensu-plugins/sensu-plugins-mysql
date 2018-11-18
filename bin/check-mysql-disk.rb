@@ -97,7 +97,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
       total_size = 0.0
       db = Mysql.real_connect(config[:host], db_user, db_pass, nil, config[:port], config[:socket])
 
-      results = db.query <<-EOSQL
+      results = db.query <<-SQL
         SELECT table_schema,
         count(*) TABLES,
         concat(round(sum(table_rows)/1000000,2),'M') rows,
@@ -106,7 +106,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
         round(sum(data_length+index_length)/(1024*1024*1024),2) total_size,
         round(sum(index_length)/sum(data_length),2) idxfrac
         FROM information_schema.TABLES group by table_schema
-      EOSQL
+      SQL
 
       unless results.nil?
         results.each_hash do |row|
@@ -125,14 +125,11 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
       else
         ok diskstr
       end
-
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
       critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
-
-    rescue => e
+    rescue StandardError => e
       critical e
-
     ensure
       db.close if db
     end

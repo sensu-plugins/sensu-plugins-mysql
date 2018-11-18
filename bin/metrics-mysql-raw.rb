@@ -182,7 +182,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Select_range' =>           'selectRange',
         'Select_range_check' =>     'selectRange_check',
         'Select_scan' =>            'selectScan',
-        'Slow_queries' =>           'slowQueries'
+        'Slow_queries' =>           'slowQueries',
       },
       'querycache' => {
         'Qcache_queries_in_cache' =>  'queriesInCache',
@@ -190,7 +190,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Qcache_inserts' =>           'inserts',
         'Qcache_not_cached' =>        'notCached',
         'Qcache_lowmem_prunes' =>     'lowMemPrunes',
-        'Qcache_free_memory' =>       'freeMemory'
+        'Qcache_free_memory' =>       'freeMemory',
       },
       'commands' => {
         'Com_admin_commands' => 'admin_commands',
@@ -225,7 +225,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Com_lock_tables' =>    'lock_tables',
         'Com_show_create_table' => 'show_create_table',
         'Com_unlock_tables' =>  'unlock_tables',
-        'Com_alter_table' =>    'alter_table'
+        'Com_alter_table' =>    'alter_table',
       },
       'counters' => {
         'Handler_write' =>              'handlerWrite',
@@ -240,7 +240,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Handler_commit' =>             'handlerCommit',
         'Handler_rollback' =>           'handlerRollback',
         'Handler_savepoint' =>          'handlerSavepoint',
-        'Handler_savepoint_rollback' => 'handlerSavepointRollback'
+        'Handler_savepoint_rollback' => 'handlerSavepointRollback',
       },
       'innodb' => {
         'Innodb_buffer_pool_pages_total' =>   'bufferTotal_pages',
@@ -261,11 +261,11 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Innodb_rows_updated' =>              'rowsUpdated',
         'Innodb_rows_read' =>                 'rowsRead',
         'Innodb_rows_deleted' =>              'rowsDeleted',
-        'Innodb_rows_inserted' =>             'rowsInserted'
+        'Innodb_rows_inserted' =>             'rowsInserted',
       },
       'configuration' => {
-        'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount'
-      }
+        'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount',
+      },
     }
     metrics
   end
@@ -299,7 +299,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         output "#{config[:scheme]}.#{mysql_shorthostname}.general.#{metrics['general'][key]}", value
       end
     end
-  rescue => e
+  rescue StandardError => e
     puts "Error querying slave status: #{e}" if config[:verbose]
   end
 
@@ -332,14 +332,15 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         end
       end
     end
-  rescue => e
+  rescue StandardError => e
     puts e.message
   end
 
   # Fetch MySQL metrics
   def fetcher(db_user, db_pass, db_socket)
     metrics = metrics_hash
-    if config[:check] == 'metric'
+    # FIXME: this needs refactoring
+    if config[:check] == 'metric' # rubocop:disable Style/GuardClause
       mysql_shorthostname = config[:hostname].tr('.', '_')
       begin
         table = []
@@ -362,7 +363,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         table.each do |row|
           metrics.each do |category, var_mapping|
             row_var_name = row['Variable_name'].to_s
-            var_mapping.keys.each do |vmkey|
+            var_mapping.each_key do |vmkey|
               if row_var_name.to_s == vmkey.to_s
                 prefix = "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{vmkey[row_var_name]}"
                 output prefix, row['Value'] unless mysql_shorthostname.to_s.chomp.empty?
@@ -373,7 +374,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         # Slave and configuration metrics here
         slave_metrics(metrics)
         configuration_metrics(metrics, db_user, db_pass, db_socket)
-      rescue => e
+      rescue StandardError => e
         critical "Error message: status: #{status} | Exception: #{e.backtrace}"
       ensure
         ok ''

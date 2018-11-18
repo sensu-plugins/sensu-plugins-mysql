@@ -139,7 +139,7 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       else
         critical "Error message: status: #{status}"
       end
-    rescue => e
+    rescue StandardError => e
       critical "Error message: status: #{status} | Exception: #{e}"
     ensure
       puts ''
@@ -162,14 +162,14 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       end
       dict = []
       table.keys.to_a.each do |k|
-        %w(Slave_IO_State Slave_IO_Running Slave_SQL_Running Last_IO_Error Last_SQL_Error Seconds_Behind_Master).each do |key|
+        %w[Slave_IO_State Slave_IO_Running Slave_SQL_Running Last_IO_Error Last_SQL_Error Seconds_Behind_Master].each do |key|
           dict.push(k.strip.to_s) if key.strip == k.strip
         end
       end
       table.each do |attribute, value|
         puts "#{attribute} : #{value}" if config[:debug]
         warn "couldn't detect replication status :#{dict.size}" unless dict.size == 6
-        slave_running = %w(Slave_IO_Running Slave_SQL_Running).all? do |key|
+        slave_running = %w[Slave_IO_Running Slave_SQL_Running].all? do |key|
           table[key].to_s =~ /Yes/
         end
         output = 'Slave not running!'
@@ -189,7 +189,7 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
         end
       end
       ok 'show slave status was nil. This server is not a slave.'
-    rescue => e
+    rescue StandardError => e
       critical "Error message: status: #{status} | Exception: #{e}"
     end
   end
