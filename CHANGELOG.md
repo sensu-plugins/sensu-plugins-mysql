@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [2.7.0] - 2018-11-25
 ### Added
 - metrics-mysql-select-count.rb script (@nagyt234)
 
@@ -139,7 +141,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.6.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.7.0...HEAD
+[2.7.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.4.0...2.5.0
