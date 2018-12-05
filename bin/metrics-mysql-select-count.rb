@@ -88,14 +88,11 @@ class MysqlQueryCountMetric < Sensu::Plugin::Metric::CLI::Graphite
 
     output config[:name], count
     ok
-
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
-
   rescue StandardError => e
     critical "unhandled exception: #{e}"
-
   ensure
     db.close if db
   end
