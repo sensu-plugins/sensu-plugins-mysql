@@ -20,6 +20,7 @@
  * bin/check-mysql-select-count.rb
  * bin/check-mysql-msr-replication-status.rb
  * bin/metrics-mysql-graphite.rb
+ * bin/metrics-mysql-multiple-select-count.rb
  * bin/metrics-mysql-processes.rb
  * bin/metrics-mysql-raw.rb
  * bin/metrics-mysql.rb
@@ -104,6 +105,10 @@ $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-select-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT COUNT(*) FROM table t'
 ```
 
+**metrics-mysql-multiple-select-count** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/metrics-mysql-multiple-select-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query '{"t1_count":"SELECT COUNT(*) FROM table t1", "t2_count":"SELECT COUNT(*) FROM table t2"}'
+```
 ### Security
 
 In keeping with the principle of least privilege you should create a new user with the minimum required permissions. See the table below for minimum permissions for each check.
@@ -124,6 +129,7 @@ In keeping with the principle of least privilege you should create a new user wi
 | metrics-mysql-processes.rb             | `SELECT`                                                  |
 | metrics-mysql-query-result-count.rb    | depends on query                                          |
 | metrics-mysql-select-count.rb          | depends on query                                          |
+| metrics-mysql-multiple-select-count    | depends on query                                          |
 | metrics-mysql-raw.rb                   | `SELECT`                                                  |
 | metrics-mysql.rb                       | `INSERT` into `sensumetrics.sensu_historic_metrics`       |
 
