@@ -94,6 +94,27 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
+  option :flapping_lag,
+         short: '-l',
+         long: '--flapping-lag=VALUE',
+         description: 'Lag threshold to trigger flapping protection',
+         default: 100000,
+         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+
+  option :flapping_retry,
+         short: '-r',
+         long: '--flapping-retry=VALUE',
+         description: 'Number of retries when lag flapping protection is triggered',
+         default: 0,
+         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+
+  option :flapping_sleep,
+         long: '--flapping-sleep=VALUE',
+         description: 'Sleep between flapping protection retries',
+         default: 1,
+         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+
+
   def detect_replication_status?(row)
     %w[
       Slave_IO_State
@@ -177,19 +198,29 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
   def run
     db = open_connection
 
-    row = query_slave_status(db)
-    ok 'show slave status was nil. This server is not a slave.' if row.nil?
-    warn "couldn't detect replication status" unless detect_replication_status?(row)
+    retries = config[:flapping_retry]
+    while retries >= 0
+      row = query_slave_status(db)
+      ok 'show slave status was nil. This server is not a slave.' if row.nil?
+      warn "couldn't detect replication status" unless detect_replication_status?(row)
 
-    slave_running = slave_running?(row)
-    critical broken_slave_message(row) unless slave_running
+      slave_running = slave_running?(row)
+      critical broken_slave_message(row) unless slave_running
 
-    replication_delay = row['Seconds_Behind_Master'].to_i
-    message = "replication delayed by #{replication_delay}"
-    # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
-    critical message if replication_delay > config[:crit]
-    warning message if replication_delay > config[:warn]
-    ok "#{ok_slave_message}, #{message}"
+      replication_delay = row['Seconds_Behind_Master'].to_i
+      retries -= 1
+      if replication_delay >= config[:flapping_lag] && retries >= 0
+        sleep config[:flapping_sleep]
+        next
+      end
+
+      message = "replication delayed by #{replication_delay}"
+      # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
+      critical message if replication_delay > config[:crit]
+      warning message if replication_delay > config[:warn]
+      ok "#{ok_slave_message}, #{message}"
+    end
+    unknown "unable to retrieve slave status"
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')

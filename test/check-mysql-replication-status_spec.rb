@@ -52,10 +52,10 @@ describe CheckMysqlReplicationStatus do
     ['No',  'Yes',  nil, 2, 'critical'],
     ['Yes', 'No',   nil, 2, 'critical'],
     ['No',  'No',   nil, 2, 'critical'],
-    ['Yes', 'Yes',  899, 0, 'ok'],
-    ['Yes', 'Yes',  900, 1, 'warning'],
-    ['Yes', 'Yes', 1799, 1, 'warning'],
-    ['Yes', 'Yes', 1800, 2, 'critical'],
+    ['Yes', 'Yes',  900, 0, 'ok'],
+    ['Yes', 'Yes',  901, 1, 'warning'],
+    ['Yes', 'Yes', 1800, 1, 'warning'],
+    ['Yes', 'Yes', 1801, 2, 'critical'],
   ].each do |testdata|
     it "returns #{testdata[4]} for default thresholds" do
       slave_status_row = {
@@ -74,6 +74,45 @@ describe CheckMysqlReplicationStatus do
         exit_code = e.status
       end
       expect(exit_code).to eq testdata[3]
+    end
+  end
+
+  [
+    [    0, 0, 'ok'],
+    [99999, 2, 'critical'],
+  ].each do |testdata|
+    it "sleeps with flapping protection and returns #{testdata[2]} for default thresholds" do
+      checker.config[:flapping_retry] = 1
+      checker.config[:flapping_sleep] = 10
+
+      slave_status_row = [
+        {
+          "Slave_IO_State" => '',
+          "Slave_IO_Running" => 'Yes',
+          "Slave_SQL_Running" => 'Yes',
+          "Last_IO_Error" => '',
+          "Last_SQL_Error" => '',
+          "Seconds_Behind_Master" => 100000
+        },
+        {
+          "Slave_IO_State" => '',
+          "Slave_IO_Running" => 'Yes',
+          "Slave_SQL_Running" => 'Yes',
+          "Last_IO_Error" => '',
+          "Last_SQL_Error" => '',
+          "Seconds_Behind_Master" => testdata[0]
+        }
+      ]
+
+      begin
+        allow(checker).to receive(:open_connection) # do nothing
+        allow(checker).to receive(:query_slave_status).and_return slave_status_row[0], slave_status_row[1]
+        expect(checker).to receive(:sleep).with(10)
+        checker.run
+      rescue SystemExit => e
+        exit_code = e.status
+      end
+      expect(exit_code).to eq testdata[1]
     end
   end
 end

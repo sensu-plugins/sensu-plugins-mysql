@@ -10,6 +10,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Changed
 - check-mysql-replication-status: refactoring & spec tests (@DrMurx)
 
+### Added
+- check-mysql-replication-status: added protection against `SHOW SLAVE STATUS` high lag reporting bug (@DrMurx)
+
 ## [3.1.1] - 2019-03-04
 ### Fixed
 - check-mysql-disk.rb: update defaults for float and integer values as a string as the defaults apparently do not execute the proc which would have properly converted it to the appropriate type (@majormoses)

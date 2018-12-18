@@ -80,6 +80,15 @@ $ /opt/sensu/embedded/bin/check-mysql-threads.rb --host=<DBHOST> --ini=/etc/sens
 $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
 ```
 
+**check-mysql-replication-status** example with flapping protection
+
+MariaDB/MySQL sometimes wrongly reports a very high replication lag for a short moment. Flapping protection helps mitigating this issue
+better than setting `occurrences` in sensu's `checks` definition because you don't lose any alerting granularity.
+
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini --flapping-retry=1 --flapping-lag=86400 --flapping-sleep=2
+```
+
 **check-mysql-msr-replication-status** example
 ```bash
 $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
