@@ -171,8 +171,8 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
             ok "master connection: #{db_conn}, slave running: #{slave_running}, #{message}"
           end
         end
-        ok 'show slave status was nil. This server is not a slave.'
       end
+      ok 'show slave status was nil. This server is not a slave.'
     rescue Mysql::Error => e
       errstr = "Error code: #{e.errno} Error message: #{e.error}"
       critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
