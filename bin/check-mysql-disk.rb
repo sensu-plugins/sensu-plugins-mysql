@@ -52,21 +52,21 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
          long: '--warning=VALUE',
          description: 'Warning threshold',
          proc: proc(&:to_f),
-         default: '85'
+         default: 85
 
   option :crit,
          short: '-c',
          long: '--critical=VALUE',
          description: 'Critical threshold',
          proc: proc(&:to_f),
-         default: '95'
+         default: 95
 
   option :port,
          description: 'Port to connect to',
          short: '-P PORT',
          long: '--port PORT',
          proc: proc(&:to_i),
-         default: '3306'
+         default: 3306
 
   option :socket,
          description: 'Socket to use',
