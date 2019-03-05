@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [3.1.1] - 2019-03-04
+### Fixed
+- check-mysql-disk.rb: update defaults for float and integer values as a string as the defaults apparently do not execute the proc which would have properly converted it to the appropriate type (@majormoses)
+
 ## [3.1.0] - 2018-12-15
 ### Added
 - metrics-mysql-multiple-select-countcript (@nagyt234)
@@ -156,7 +160,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.1...HEAD
+[3.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.7.0...3.0.0
 [2.7.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.6.0...2.7.0
