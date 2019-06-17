@@ -94,16 +94,16 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
+  option :lag_outlier_retry,
+         long: '--lag-outlier-retry=VALUE',
+         description: 'Number of retries when lag outlier is detected (0 = disable)',
+         default: 0,
+         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+
   option :lag_outlier_threshold,
          long: '--lag-outlier-threshold=VALUE',
          description: 'Lag threshold to trigger outlier protection',
          default: 100000,
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
-
-  option :lag_outlier_retry,
-         long: '--lag-outlier-retry=VALUE',
-         description: 'Number of retries when lag outlier protection is triggered',
-         default: 0,
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
   option :lag_outlier_sleep,
@@ -197,6 +197,8 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     db = open_connection
 
     retries = config[:lag_outlier_retry]
+    unknown "Invalid value for --lag-outlier-retry" if retries < 0
+
     while retries >= 0
       row = query_slave_status(db)
       ok 'show slave status was nil. This server is not a slave.' if row.nil?
@@ -207,18 +209,18 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
 
       replication_delay = row['Seconds_Behind_Master'].to_i
       retries -= 1
-      if replication_delay >= config[:lag_outlier_threshold] && retries >= 0
-        sleep config[:lag_outlier_sleep]
-        next
-      end
 
-      message = "replication delayed by #{replication_delay}"
-      # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
-      critical message if replication_delay > config[:crit]
-      warning message if replication_delay > config[:warn]
-      ok "#{ok_slave_message}, #{message}"
+      break if retries < 0 || replication_delay < config[:lag_outlier_threshold]
+
+      # Outlier detected - wait and retry
+      sleep config[:lag_outlier_sleep]
     end
-    unknown "unable to retrieve slave status"
+
+    message = "replication delayed by #{replication_delay}"
+    # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
+    critical message if replication_delay > config[:crit]
+    warning message if replication_delay > config[:warn]
+    ok "#{ok_slave_message}, #{message}"
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
     critical "#{errstr} SQLSTATE: #{e.sqlstate}" if e.respond_to?('sqlstate')
