@@ -112,6 +112,13 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          default: 1,
          proc: proc { |s| s.to_i }
 
+  option :lag_outlier_report,
+         long: '--lag-outlier-report=VALUE',
+         description: 'Level to report lag outlier',
+         default: :ok,
+         proc: proc(&:to_sym),
+         in: %i(ok warning critical)
+
 
   def detect_replication_status?(row)
     %w[
@@ -199,6 +206,8 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     retries = config[:lag_outlier_retry]
     unknown "Invalid value for --lag-outlier-retry" if retries < 0
 
+    lag_outlier = 0
+
     while retries >= 0
       row = query_slave_status(db)
       ok 'show slave status was nil. This server is not a slave.' if row.nil?
@@ -213,13 +222,22 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
       break if retries < 0 || replication_delay < config[:lag_outlier_threshold]
 
       # Outlier detected - wait and retry
+      lag_outlier = [lag_outlier, replication_delay].max
       sleep config[:lag_outlier_sleep]
     end
 
     message = "replication delayed by #{replication_delay}"
-    # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
-    critical message if replication_delay > config[:crit]
-    warning message if replication_delay > config[:warn]
+    message = "#{message}, with max. outlier at #{lag_outlier}" if lag_outlier > 0
+
+    # Special reporting if outlier condition was met but calmed down
+    if lag_outlier > 0 && replication_delay == 0
+      critical message if config[:lag_outlier_report] == :critical
+      warning message if config[:lag_outlier_report] == :warning
+    else
+      # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
+      critical message if replication_delay > config[:crit]
+      warning message if replication_delay > config[:warn]
+    end
     ok "#{ok_slave_message}, #{message}"
   rescue Mysql::Error => e
     errstr = "Error code: #{e.errno} Error message: #{e.error}"
