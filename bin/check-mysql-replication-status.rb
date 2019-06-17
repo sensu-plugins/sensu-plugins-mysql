@@ -46,7 +46,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Database port',
          default: 3306,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
   option :socket,
          short: '-s SOCKET',
@@ -84,7 +84,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Warning threshold for replication lag',
          default: 900,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
   option :crit,
          short: '-c',
@@ -92,25 +92,25 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Critical threshold for replication lag',
          default: 1800,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
   option :lag_outlier_retry,
          long: '--lag-outlier-retry=VALUE',
          description: 'Number of retries when lag outlier is detected (0 = disable)',
          default: 0,
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
   option :lag_outlier_threshold,
          long: '--lag-outlier-threshold=VALUE',
          description: 'Lag threshold to trigger outlier protection',
          default: 100000,
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
   option :lag_outlier_sleep,
          long: '--lag-outlier-sleep=VALUE',
          description: 'Sleep between lag outlier protection retries',
          default: 1,
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: proc { |s| s.to_i }
 
 
   def detect_replication_status?(row)
