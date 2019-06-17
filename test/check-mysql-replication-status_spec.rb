@@ -29,6 +29,7 @@
 require_relative '../bin/check-mysql-replication-status'
 require_relative './spec_helper.rb'
 
+# rubocop:disable Metrics/BlockLength
 describe CheckMysqlReplicationStatus do
   let(:checker) { described_class.new }
   let(:exit_code) { nil }
@@ -48,23 +49,23 @@ describe CheckMysqlReplicationStatus do
   end
 
   [
-    ['Yes', 'Yes',    0, 0, 'ok'],
-    ['No',  'Yes',  nil, 2, 'critical'],
-    ['Yes', 'No',   nil, 2, 'critical'],
-    ['No',  'No',   nil, 2, 'critical'],
-    ['Yes', 'Yes',  900, 0, 'ok'],
-    ['Yes', 'Yes',  901, 1, 'warning'],
+    ['Yes', 'Yes', 0, 0, 'ok'],
+    ['No',  'Yes', nil, 2, 'critical'],
+    ['Yes', 'No', nil, 2, 'critical'],
+    ['No',  'No',  nil, 2, 'critical'],
+    ['Yes', 'Yes', 900, 0, 'ok'],
+    ['Yes', 'Yes', 901, 1, 'warning'],
     ['Yes', 'Yes', 1800, 1, 'warning'],
     ['Yes', 'Yes', 1801, 2, 'critical'],
   ].each do |testdata|
     it "returns #{testdata[4]} for default thresholds" do
       slave_status_row = {
-        "Slave_IO_State" => '',
-        "Slave_IO_Running" => testdata[0],
-        "Slave_SQL_Running" => testdata[1],
-        "Last_IO_Error" => '',
-        "Last_SQL_Error" => '',
-        "Seconds_Behind_Master" => testdata[2]
+        'Slave_IO_State' => '',
+        'Slave_IO_Running' => testdata[0],
+        'Slave_SQL_Running' => testdata[1],
+        'Last_IO_Error' => '',
+        'Last_SQL_Error' => '',
+        'Seconds_Behind_Master' => testdata[2]
       }
       begin
         allow(checker).to receive(:open_connection) # do nothing
@@ -78,8 +79,8 @@ describe CheckMysqlReplicationStatus do
   end
 
   [
-    [    0, 0, 'ok'],
-    [99999, 2, 'critical'],
+    [0, 0, 'ok'],
+    [99_999, 2, 'critical'],
   ].each do |testdata|
     it "sleeps with lag outlier protection and returns #{testdata[2]} for default thresholds" do
       checker.config[:lag_outlier_retry] = 1
@@ -87,20 +88,20 @@ describe CheckMysqlReplicationStatus do
 
       slave_status_row = [
         {
-          "Slave_IO_State" => '',
-          "Slave_IO_Running" => 'Yes',
-          "Slave_SQL_Running" => 'Yes',
-          "Last_IO_Error" => '',
-          "Last_SQL_Error" => '',
-          "Seconds_Behind_Master" => 100000
+          'Slave_IO_State' => '',
+          'Slave_IO_Running' => 'Yes',
+          'Slave_SQL_Running' => 'Yes',
+          'Last_IO_Error' => '',
+          'Last_SQL_Error' => '',
+          'Seconds_Behind_Master' => 100_000
         },
         {
-          "Slave_IO_State" => '',
-          "Slave_IO_Running" => 'Yes',
-          "Slave_SQL_Running" => 'Yes',
-          "Last_IO_Error" => '',
-          "Last_SQL_Error" => '',
-          "Seconds_Behind_Master" => testdata[0]
+          'Slave_IO_State' => '',
+          'Slave_IO_Running' => 'Yes',
+          'Slave_SQL_Running' => 'Yes',
+          'Last_IO_Error' => '',
+          'Last_SQL_Error' => '',
+          'Seconds_Behind_Master' => testdata[0]
         }
       ]
 

@@ -103,7 +103,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
   option :lag_outlier_threshold,
          long: '--lag-outlier-threshold=VALUE',
          description: 'Lag threshold to trigger outlier protection',
-         default: 100000,
+         default: 100_000,
          proc: proc { |s| s.to_i }
 
   option :lag_outlier_sleep,
@@ -117,8 +117,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Level to report lag outlier',
          default: :ok,
          proc: proc(&:to_sym),
-         in: %i(ok warning critical)
-
+         in: %i[ok warning critical]
 
   def detect_replication_status?(row)
     %w[
@@ -194,7 +193,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     db_conn = config[:master_connection]
 
     if db_conn.nil?
-      "slave running: true"
+      'slave running: true'
     else
       "master connection: #{db_conn}, slave running: true"
     end
@@ -204,7 +203,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     db = open_connection
 
     retries = config[:lag_outlier_retry]
-    unknown "Invalid value for --lag-outlier-retry" if retries < 0
+    unknown 'Invalid value for --lag-outlier-retry' if retries < 0
 
     lag_outlier = 0
 
@@ -234,7 +233,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
       critical message if config[:lag_outlier_report] == :critical
       warning message if config[:lag_outlier_report] == :warning
     else
-      # TODO (breaking change): Thresholds are exclusive which is not consistent with all other checks
+      # TODO: (breaking change) Thresholds are exclusive which is not consistent with all other checks
       critical message if replication_delay > config[:crit]
       warning message if replication_delay > config[:warn]
     end
