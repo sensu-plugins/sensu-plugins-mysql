@@ -27,7 +27,7 @@
 #
 
 require_relative '../bin/check-mysql-replication-status'
-#require_relative './spec_helper.rb'
+require_relative './spec_helper.rb'
 
 describe CheckMysqlReplicationStatus do
   let(:checker) { described_class.new }
