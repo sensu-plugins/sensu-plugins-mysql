@@ -81,9 +81,9 @@ describe CheckMysqlReplicationStatus do
     [    0, 0, 'ok'],
     [99999, 2, 'critical'],
   ].each do |testdata|
-    it "sleeps with flapping protection and returns #{testdata[2]} for default thresholds" do
-      checker.config[:flapping_retry] = 1
-      checker.config[:flapping_sleep] = 10
+    it "sleeps with lag outlier protection and returns #{testdata[2]} for default thresholds" do
+      checker.config[:lag_outlier_retry] = 1
+      checker.config[:lag_outlier_sleep] = 10
 
       slave_status_row = [
         {

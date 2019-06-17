@@ -94,23 +94,21 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
-  option :flapping_lag,
-         short: '-l',
-         long: '--flapping-lag=VALUE',
-         description: 'Lag threshold to trigger flapping protection',
+  option :lag_outlier_threshold,
+         long: '--lag-outlier-threshold=VALUE',
+         description: 'Lag threshold to trigger outlier protection',
          default: 100000,
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
-  option :flapping_retry,
-         short: '-r',
-         long: '--flapping-retry=VALUE',
-         description: 'Number of retries when lag flapping protection is triggered',
+  option :lag_outlier_retry,
+         long: '--lag-outlier-retry=VALUE',
+         description: 'Number of retries when lag outlier protection is triggered',
          default: 0,
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
-  option :flapping_sleep,
-         long: '--flapping-sleep=VALUE',
-         description: 'Sleep between flapping protection retries',
+  option :lag_outlier_sleep,
+         long: '--lag-outlier-sleep=VALUE',
+         description: 'Sleep between lag outlier protection retries',
          default: 1,
          proc: lambda { |s| s.to_i } # rubocop:disable Lambda
 
@@ -198,7 +196,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
   def run
     db = open_connection
 
-    retries = config[:flapping_retry]
+    retries = config[:lag_outlier_retry]
     while retries >= 0
       row = query_slave_status(db)
       ok 'show slave status was nil. This server is not a slave.' if row.nil?
@@ -209,8 +207,8 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
 
       replication_delay = row['Seconds_Behind_Master'].to_i
       retries -= 1
-      if replication_delay >= config[:flapping_lag] && retries >= 0
-        sleep config[:flapping_sleep]
+      if replication_delay >= config[:lag_outlier_threshold] && retries >= 0
+        sleep config[:lag_outlier_sleep]
         next
       end
 
