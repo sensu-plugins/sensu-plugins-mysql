@@ -49,14 +49,15 @@ describe CheckMysqlReplicationStatus do
   end
 
   [
-    ['Yes', 'Yes', 0, 0, 'ok'],
-    ['No',  'Yes', nil, 2, 'critical'],
-    ['Yes', 'No', nil, 2, 'critical'],
-    ['No',  'No',  nil, 2, 'critical'],
-    ['Yes', 'Yes', 900, 0, 'ok'],
-    ['Yes', 'Yes', 901, 1, 'warning'],
-    ['Yes', 'Yes', 1800, 1, 'warning'],
-    ['Yes', 'Yes', 1801, 2, 'critical'],
+    # IO Thread status | SQL Thread status | Lag | Expected exit code | Expected reporting level
+    ['Yes', 'Yes', 0, 0, :ok],
+    ['No',  'Yes', nil, 2, :critical],
+    ['Yes', 'No', nil, 2, :critical],
+    ['No',  'No',  nil, 2, :critical],
+    ['Yes', 'Yes', 900, 0, :ok],
+    ['Yes', 'Yes', 901, 1, :warning],
+    ['Yes', 'Yes', 1800, 1, :warning],
+    ['Yes', 'Yes', 1801, 2, :critical],
   ].each do |testdata|
     it "returns #{testdata[4]} for default thresholds" do
       slave_status_row = {
@@ -67,9 +68,10 @@ describe CheckMysqlReplicationStatus do
         'Last_SQL_Error' => '',
         'Seconds_Behind_Master' => testdata[2]
       }
+      allow(checker).to receive(:open_connection) # do nothing
+      allow(checker).to receive(:query_slave_status).and_return slave_status_row
+      expect(checker).to receive(testdata[4]).once.and_call_original
       begin
-        allow(checker).to receive(:open_connection) # do nothing
-        allow(checker).to receive(:query_slave_status).and_return slave_status_row
         checker.run
       rescue SystemExit => e
         exit_code = e.status
@@ -79,11 +81,12 @@ describe CheckMysqlReplicationStatus do
   end
 
   [
-    [0, :ok, 0, 'ok'],
-    [99_999, :ok, 2, 'critical'],
-    [0, :critical, 2, 'critical'],
+    # Lag after outlier | Configured reporting level | Exit code | Expected reporting level | Expected message
+    [0, :ok, 0, :ok, 'slave running: true, replication delayed by 0, with max. outlier at 100000'],
+    [99_999, :ok, 2, :critical, 'replication delayed by 99999, with max. outlier at 100000'],
+    [0, :critical, 2, :critical, 'replication delayed by 0, with max. outlier at 100000'],
   ].each do |testdata|
-    it "sleeps with lag outlier protection and returns #{testdata[3]} (using default threshold)" do
+    it "sleeps with lag outlier protection and returns #{testdata[3]} (using default thresholds)" do
       checker.config[:lag_outlier_retry] = 1
       checker.config[:lag_outlier_sleep] = 10
       checker.config[:lag_outlier_report] = testdata[1]
@@ -107,10 +110,11 @@ describe CheckMysqlReplicationStatus do
         }
       ]
 
+      allow(checker).to receive(:open_connection) # do nothing
+      allow(checker).to receive(:query_slave_status).and_return slave_status_row[0], slave_status_row[1]
+      expect(checker).to receive(:sleep).with(10)
+      expect(checker).to receive(testdata[3]).with(testdata[4]).once.and_call_original
       begin
-        allow(checker).to receive(:open_connection) # do nothing
-        allow(checker).to receive(:query_slave_status).and_return slave_status_row[0], slave_status_row[1]
-        expect(checker).to receive(:sleep).with(10)
         checker.run
       rescue SystemExit => e
         exit_code = e.status
