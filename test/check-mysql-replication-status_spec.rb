@@ -79,12 +79,14 @@ describe CheckMysqlReplicationStatus do
   end
 
   [
-    [0, 0, 'ok'],
-    [99_999, 2, 'critical'],
+    [0, :ok, 0, 'ok'],
+    [99_999, :ok, 2, 'critical'],
+    [0, :critical, 2, 'critical'],
   ].each do |testdata|
-    it "sleeps with lag outlier protection and returns #{testdata[2]} for default thresholds" do
+    it "sleeps with lag outlier protection and returns #{testdata[3]} (using default threshold)" do
       checker.config[:lag_outlier_retry] = 1
       checker.config[:lag_outlier_sleep] = 10
+      checker.config[:lag_outlier_report] = testdata[1]
 
       slave_status_row = [
         {
@@ -113,7 +115,7 @@ describe CheckMysqlReplicationStatus do
       rescue SystemExit => e
         exit_code = e.status
       end
-      expect(exit_code).to eq testdata[1]
+      expect(exit_code).to eq testdata[2]
     end
   end
 end
