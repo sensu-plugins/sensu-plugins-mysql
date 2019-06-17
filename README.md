@@ -80,6 +80,15 @@ $ /opt/sensu/embedded/bin/check-mysql-threads.rb --host=<DBHOST> --ini=/etc/sens
 $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
 ```
 
+**check-mysql-replication-status** example with lag outlier protection
+
+MariaDB/MySQL sometimes wrongly reports a very high replication lag for a short moment. The outlier protection helps mitigating this issue
+better than setting `occurrences` in sensu's `checks` definition because you don't lose any alerting granularity.
+
+```bash
+$ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini --lag-outlier-retry=1 --lag-outlier-threshold=86400 --lag-outlier-sleep=2
+```
+
 **check-mysql-msr-replication-status** example
 ```bash
 $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini=/etc/sensu/my.ini
