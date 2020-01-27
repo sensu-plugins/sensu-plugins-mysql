@@ -36,7 +36,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'mysql'
+require 'mysql2'
 require 'socket'
 require 'inifile'
 
@@ -220,14 +220,20 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         db_pass = config[:password]
       end
       begin
-        mysql = Mysql.new(mysql_host, db_user, db_pass, nil, config[:port], config[:socket])
+        mysql = Mysql2::Client.new(
+          host: mysql_host,
+          username: db_user,
+          password: db_pass,
+          port: config[:port],
+          socket: config[:socket]
+        )
 
         results = mysql.query('SHOW GLOBAL STATUS')
       rescue StandardError => e
         puts e.message
       end
 
-      results.each_hash do |row|
+      results.each do |row|
         metrics.each do |category, var_mapping|
           if var_mapping.key?(row['Variable_name'])
             output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{var_mapping[row['Variable_name']]}", row['Value']
@@ -239,7 +245,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         slave_results = mysql.query('SHOW SLAVE STATUS')
         # should return a single element array containing one hash
         # #YELLOW
-        slave_results.fetch_hash.each_pair do |key, value|
+        slave_results.first.each do |key, value|
           if metrics['general'].include?(key)
             # Replication lag being null is bad, very bad, so negativate it here
             value = -1 if key == 'Seconds_Behind_Master' && value.nil?
@@ -254,7 +260,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         variables_results = mysql.query('SHOW GLOBAL VARIABLES')
 
         category = 'configuration'
-        variables_results.each_hash do |row|
+        variables_results.each do |row|
           metrics[category].each do |metric, desc|
             if metric.casecmp(row['Variable_name']).zero?
               output "#{config[:scheme]}.#{mysql_shorthostname}.#{category}.#{desc}", row['Value']
