@@ -119,7 +119,7 @@ class MetricsMySQLProcesses < Sensu::Plugin::Metric::CLI::Graphite
 
   def run
     config[:host].split(' ').each do |mysql_host|
-      mysql_shorthostname = mysql_host.split('.')[0]
+      mysql_shorthostname = mysql_host.tr('.', '_')
       db_user, db_pass = db_connection_creds
       begin
         mysql = Mysql.new(mysql_host, db_user, db_pass, nil, config[:port], config[:socket])

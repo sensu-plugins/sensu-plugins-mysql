@@ -211,7 +211,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
 
     # FIXME: break this up
     config[:host].split(' ').each do |mysql_host| # rubocop:disable Metrics/BlockLength
-      mysql_shorthostname = mysql_host.split('.')[0]
+      mysql_shorthostname = mysql_host.tr('.', '_')
       if config[:ini]
         ini = IniFile.load(config[:ini])
         section = ini[config[:ini_section]]
