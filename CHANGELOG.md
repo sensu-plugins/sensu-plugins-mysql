@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Fixed
+- Align output scheme for `metrics-mysql-graphite.rb` and `metrics-mysql-processes.rb`
+- Make mysql_shorthostname compliant with graphite even if 127.0.0.1 is givent as hostname
+- include MR #111: Collect more innodb variables #111: 
+- `metrics-mysql-graphite.rb`: collect more InnoDB variables. (@boutetnico)
+- include metrics gathering from  `https://github.com/sensu-plugins/sensu-plugins-percona` in `metrics-mysql-graphite.rb` (there is no reason to run the gathering twice and no reasons to keep two code base)
 
 ## [3.2.0] - 2020-08-26
 ### Changed
