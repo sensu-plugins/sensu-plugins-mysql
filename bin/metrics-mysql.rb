@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # Copyright 2014 Paulo Miguel Almeida Rodenas (paulo.ubuntu@gmail.com)
 #
@@ -52,7 +54,7 @@ class MysqlMetric < Sensu::Handler
       puts e.errno
       puts e.error
     ensure
-      con.close if con
+      con&.close
     end
   end
 end

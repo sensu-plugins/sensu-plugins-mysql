@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Query Result Count Check
 #
@@ -105,6 +107,6 @@ class MysqlQueryCountCheck < Sensu::Plugin::Check::CLI
   rescue StandardError => e
     critical e
   ensure
-    db.close if db
+    db&.close
   end
 end

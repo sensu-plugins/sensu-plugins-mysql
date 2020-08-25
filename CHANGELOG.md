@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Changed
+- Bump sensu-plugin dependency from ~> 1.2 to ~> 4.0
+- Updated bundler dependancy to '~> 2.1'
+- Updated rubocop dependency to '~> 0.81.0'
+- Remediated rubocop issues
+- Updated rake dependency to '~> 13.0'
 
 ## [3.1.1] - 2019-03-04
 ### Fixed

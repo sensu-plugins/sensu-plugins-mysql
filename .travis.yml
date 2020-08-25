@@ -1,4 +1,6 @@
 language: ruby
+services:
+- docker
 cache:
 - bundler
 install:
@@ -16,8 +18,17 @@ script:
 - bundle exec rake default
 - gem build sensu-plugins-mysql.gemspec
 - gem install sensu-plugins-mysql-*.gem
+before_deploy:
+- bash -c "[ ! -d bonsai/ ] && git clone https://github.com/sensu/sensu-go-bonsai-asset.git bonsai || echo 'bonsai/ exists, skipping git clone'"
 deploy:
-  provider: rubygems
+- provider: script
+  script: bonsai/ruby-runtime/travis-build-ruby-plugin-assets.sh sensu-plugins-mysql
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    rvm: 2.4.1
+- provider: rubygems
   api_key:
     secure: DxypH4N1hrsjdWs5foLsHKJYtA3/4aNVZy8QaGQMcxBAi7iONV5hEsspuj/603DsuWQ5DOGt3QCFCDi+B1lLYa+vWaRq7fucnbu+CYDEt5wgmT5gnHxwv+KrREUQM/gXlpXeIt6TnUDglh1OCCUnplMeqtQJmU2K3COlHMuBmSs=
   gem: sensu-plugins-mysql

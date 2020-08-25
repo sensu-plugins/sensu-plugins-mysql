@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL InnoDB Lock Check Plugin
 # ===
@@ -143,6 +145,6 @@ class CheckMySQLInnoDBLock < Sensu::Plugin::Check::CLI
   rescue Mysql::Error => e
     critical "MySQL check failed: #{e.error}"
   ensure
-    db.close if db
+    db&.close
   end
 end
