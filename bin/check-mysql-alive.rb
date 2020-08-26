@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Alive Plugin
 # ===
@@ -96,7 +98,7 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
     rescue Mysql::Error => e
       critical "Error message: #{e.error}"
     ensure
-      db.close if db
+      db&.close
     end
   end
 end

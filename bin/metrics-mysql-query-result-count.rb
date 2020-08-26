@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Query Result Count Metric
 #
@@ -92,6 +94,6 @@ class MysqlQueryCountMetric < Sensu::Plugin::Metric::CLI::Graphite
   rescue StandardError => e
     critical e
   ensure
-    db.close if db
+    db&.close
   end
 end

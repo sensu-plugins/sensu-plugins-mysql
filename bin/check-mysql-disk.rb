@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Disk Usage Check
 # ===
@@ -108,11 +110,9 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
         FROM information_schema.TABLES group by table_schema
       SQL
 
-      unless results.nil?
-        results.each_hash do |row|
-          # #YELLOW
-          total_size = total_size + row['total_size'].to_f # rubocop:disable Style/SelfAssignment
-        end
+      results&.each_hash do |row|
+        # #YELLOW
+        total_size = total_size + row['total_size'].to_f # rubocop:disable Style/SelfAssignment
       end
 
       disk_use_percentage = total_size / disk_size * 100
@@ -131,7 +131,7 @@ class CheckMysqlDisk < Sensu::Plugin::Check::CLI
     rescue StandardError => e
       critical e
     ensure
-      db.close if db
+      db&.close
     end
   end
 end

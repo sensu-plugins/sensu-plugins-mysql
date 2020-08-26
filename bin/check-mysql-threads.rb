@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 #   check-mysql-threads.rb
 #
@@ -117,6 +119,6 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
   rescue Mysql::Error => e
     critical "MySQL check failed: #{e.error}"
   ensure
-    db.close if db
+    db&.close
   end
 end

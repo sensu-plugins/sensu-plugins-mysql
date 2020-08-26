@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # metrics-mysql-processes
 #
@@ -98,7 +100,7 @@ class MetricsMySQLProcesses < Sensu::Plugin::Metric::CLI::Graphite
     {
       'user' => {},
       'database' => {},
-      'command' => {},
+      'command' => {}
     }.each_value { |value| value.default = 0 }
   end
 

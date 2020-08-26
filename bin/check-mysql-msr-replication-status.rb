@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Multi-source Replication Status
 # ===
@@ -151,7 +153,7 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
     rescue StandardError => e
       critical "unhandled exception: #{e}"
     ensure
-      db.close if db
+      db&.close
     end
   end
 end

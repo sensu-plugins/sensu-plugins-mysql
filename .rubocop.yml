@@ -1,29 +1,29 @@
 
-MethodLength:
+Metrics/MethodLength:
   Max: 200
 
-LineLength:
+Layout/LineLength:
   Max: 160
 
-AbcSize:
+Metrics/AbcSize:
   Max: 100
 
-FileName:
+Naming/FileName:
   Enabled: false
 
-PerceivedComplexity:
+Metrics/PerceivedComplexity:
   Enabled: false
 
-CyclomaticComplexity:
+Metrics/CyclomaticComplexity:
   Enabled: false
 
-ClassLength:
+Metrics/ClassLength:
   Enabled: false
 
-IfUnlessModifier:
+Style/IfUnlessModifier:
   Enabled: false
 
-RegexpLiteral:
+Style/RegexpLiteral:
   Enabled: false
 
 Style/Documentation:
@@ -35,10 +35,24 @@ Style/Next:
 Style/NumericPredicate:
   Enabled: false
 
-# TODO: when we bump RC this should be:
-# Style/TrailingCommaInHashLiteral:
-#   Enabled: true
-# Style/TrailingCommaInArrayLiteral:
-#   Enabled: true
-Style/TrailingCommaInLiteral:
-  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+

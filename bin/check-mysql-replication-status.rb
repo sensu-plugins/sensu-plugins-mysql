@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Replication Status (modded from disk)
 # ===
@@ -45,7 +47,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Database port',
          default: 3306,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: lambda { |s| s.to_i } # rubocop:disable Style/Lambda
 
   option :socket,
          short: '-s SOCKET',
@@ -83,7 +85,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Warning threshold for replication lag',
          default: 900,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: lambda { |s| s.to_i } # rubocop:disable Style/Lambda
 
   option :crit,
          short: '-c',
@@ -91,7 +93,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          description: 'Critical threshold for replication lag',
          default: 1800,
          # #YELLOW
-         proc: lambda { |s| s.to_i } # rubocop:disable Lambda
+         proc: lambda { |s| s.to_i } # rubocop:disable Style/Lambda
 
   def detect_replication_status?(row)
     %w[
@@ -179,7 +181,7 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     rescue StandardError => e
       critical e
     ensure
-      db.close if db
+      db&.close
     end
   end
 end

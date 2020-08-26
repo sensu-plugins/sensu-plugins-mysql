@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
 #
 # MySQL Status Plugin
 # ===
@@ -115,11 +117,13 @@ class CheckMySQLStatus < Sensu::Plugin::Check::CLI
       section = ini[config[:ini_section]]
       db_user = section['user']
       db_pass = section['password']
+      # rubocop:disable Style/RedundantCondition
       db_socket = if config[:socket]
                     config[:socket]
                   else
                     section['socket']
                   end
+      # rubocop:enable Style/RedundantCondition
     else
       db_user = config[:user]
       db_pass = config[:password]
