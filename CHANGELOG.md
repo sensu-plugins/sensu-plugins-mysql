@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [3.2.0] - 2020-08-26
 ### Changed
 - Bump sensu-plugin dependency from ~> 1.2 to ~> 4.0
 - Updated bundler dependancy to '~> 2.1'
@@ -166,7 +168,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.2.0...HEAD
+[3.2.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.1...3.2.0
 [3.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/2.7.0...3.0.0
