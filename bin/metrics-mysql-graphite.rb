@@ -41,6 +41,7 @@ require 'sensu-plugin/metric/cli'
 require 'mysql'
 require 'socket'
 require 'inifile'
+require 'ipaddr'
 
 class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
   option :host,
@@ -265,7 +266,13 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
 
     # FIXME: break this up
     config[:host].split(' ').each do |mysql_host| # rubocop:disable Metrics/BlockLength
-      mysql_shorthostname = mysql_host.tr('.', '_')
+      if IPAddress.valid? mysql_host
+        # in case we have an ip address, lets sanitize mysql_host to avoid side effect in graphite name scheme
+        mysql_shorthostname = mysql_host.tr('.', '_')
+      else
+        # in case we have a fqdn, lets continue to use the shortname
+        mysql_shorthostname = mysql_host.split('.')[0]
+      end
       if config[:ini]
         ini = IniFile.load(config[:ini])
         section = ini[config[:ini_section]]
