@@ -178,41 +178,41 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
         'Handler_savepoint_rollback' => 'handlerSavepointRollback'
       },
       'innodb' => {
-        'Innodb_buffer_pool_pages_total' =>        'bufferTotal_pages',
-        'Innodb_buffer_pool_pages_free' =>         'bufferFree_pages',
-        'Innodb_buffer_pool_pages_dirty' =>        'bufferDirty_pages',
-        'Innodb_buffer_pool_pages_data' =>         'bufferUsed_pages',
-        'Innodb_buffer_pool_pages_flushed' =>      'bufferFlushed_pages',
-        'Innodb_buffer_pool_pages_misc' =>         'bufferMisc_pages',
-        'Innodb_buffer_pool_bytes_data' =>         'bufferUsed_bytes',
-        'Innodb_buffer_pool_bytes_dirty' =>        'bufferDirty_bytes',
-        'Innodb_buffer_pool_read_ahead_rnd' =>     'bufferReadAheadRnd',
-        'Innodb_buffer_pool_read_ahead' =>         'bufferReadAhead',
+        'Innodb_buffer_pool_pages_total' => 'bufferTotal_pages',
+        'Innodb_buffer_pool_pages_free' => 'bufferFree_pages',
+        'Innodb_buffer_pool_pages_dirty' => 'bufferDirty_pages',
+        'Innodb_buffer_pool_pages_data' => 'bufferUsed_pages',
+        'Innodb_buffer_pool_pages_flushed' => 'bufferFlushed_pages',
+        'Innodb_buffer_pool_pages_misc' => 'bufferMisc_pages',
+        'Innodb_buffer_pool_bytes_data' => 'bufferUsed_bytes',
+        'Innodb_buffer_pool_bytes_dirty' => 'bufferDirty_bytes',
+        'Innodb_buffer_pool_read_ahead_rnd' => 'bufferReadAheadRnd',
+        'Innodb_buffer_pool_read_ahead' => 'bufferReadAhead',
         'Innodb_buffer_pool_read_ahead_evicted' => 'bufferReadAheadEvicted',
-        'Innodb_buffer_pool_read_requests' =>      'bufferReadRequests',
-        'Innodb_buffer_pool_reads' =>              'bufferReads',
-        'Innodb_buffer_pool_wait_free' =>          'bufferWaitFree',
-        'Innodb_buffer_pool_write_requests' =>     'bufferWriteRequests',
-        'innodb_buffer_pool_size' =>               'poolSize',
-        'Innodb_page_size' =>                      'pageSize',
-        'Innodb_pages_created' =>                  'pagesCreated',
-        'Innodb_pages_read' =>                     'pagesRead',
-        'Innodb_pages_written' =>                  'pagesWritten',
-        'Innodb_row_lock_current_waits' =>         'currentLockWaits',
-        'Innodb_row_lock_waits' =>                 'lockWaitTimes',
-        'Innodb_row_lock_time' =>                  'rowLockTime',
-        'Innodb_data_reads' =>                     'fileReads',
-        'Innodb_data_writes' =>                    'fileWrites',
-        'Innodb_data_fsyncs' =>                    'fileFsyncs',
-        'Innodb_log_writes' =>                     'logWrites',
-        'Innodb_rows_updated' =>                   'rowsUpdated',
-        'Innodb_rows_read' =>                      'rowsRead',
-        'Innodb_rows_deleted' =>                   'rowsDeleted',
-        'Innodb_rows_inserted' =>                  'rowsInserted',
+        'Innodb_buffer_pool_read_requests' => 'bufferReadRequests',
+        'Innodb_buffer_pool_reads' => 'bufferReads',
+        'Innodb_buffer_pool_wait_free' => 'bufferWaitFree',
+        'Innodb_buffer_pool_write_requests' => 'bufferWriteRequests',
+        'innodb_buffer_pool_size' => 'poolSize',
+        'Innodb_page_size' => 'pageSize',
+        'Innodb_pages_created' => 'pagesCreated',
+        'Innodb_pages_read' => 'pagesRead',
+        'Innodb_pages_written' => 'pagesWritten',
+        'Innodb_row_lock_current_waits' => 'currentLockWaits',
+        'Innodb_row_lock_waits' => 'lockWaitTimes',
+        'Innodb_row_lock_time' => 'rowLockTime',
+        'Innodb_data_reads' => 'fileReads',
+        'Innodb_data_writes' => 'fileWrites',
+        'Innodb_data_fsyncs' => 'fileFsyncs',
+        'Innodb_log_writes' => 'logWrites',
+        'Innodb_rows_updated' => 'rowsUpdated',
+        'Innodb_rows_read' => 'rowsRead',
+        'Innodb_rows_deleted' => 'rowsDeleted',
+        'Innodb_rows_inserted' => 'rowsInserted'
       },
       'configuration' => {
-        'max_connections'         =>          'MaxConnections',
-        'Max_prepared_stmt_count' =>          'MaxPreparedStmtCount',
+        'max_connections' => 'MaxConnections',
+        'Max_prepared_stmt_count' => 'MaxPreparedStmtCount'
       },
       'cluster' => {
         'wsrep_last_committed' => 'last_committed',
@@ -248,7 +248,7 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
       }
     }
   end
-  
+
   def fix_and_output_evs_repl_latency_data(row, mysql_shorthostname, category)
     # see https://github.com/codership/galera/issues/67 for documentation on field mappings
     data = row['Value'].split('/')
@@ -266,13 +266,13 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
 
     # FIXME: break this up
     config[:host].split(' ').each do |mysql_host| # rubocop:disable Metrics/BlockLength
-      if IPAddress.valid? mysql_host
-        # in case we have an ip address, lets sanitize mysql_host to avoid side effect in graphite name scheme
-        mysql_shorthostname = mysql_host.tr('.', '_')
-      else
-        # in case we have a fqdn, lets continue to use the shortname
-        mysql_shorthostname = mysql_host.split('.')[0]
-      end
+      mysql_shorthostname = if IPAddress.valid? mysql_host
+                              # in case we have an ip address, lets sanitize mysql_host to avoid side effect in graphite name scheme
+                              mysql_host.tr('.', '_')
+                            else
+                              # in case we have a fqdn, lets continue to use the shortname
+                              mysql_host.split('.')[0]
+                            end
       if config[:ini]
         ini = IniFile.load(config[:ini])
         section = ini[config[:ini_section]]
@@ -291,8 +291,8 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
       end
 
       results.each_hash do |row|
-      # special handling for wsrep_evs_repl_latency as this contains forward slash delimited data
-      fix_and_output_evs_repl_latency_data(row) if row['Variable_name'] == 'wsrep_evs_repl_latency'
+        # special handling for wsrep_evs_repl_latency as this contains forward slash delimited data
+        fix_and_output_evs_repl_latency_data(row) if row['Variable_name'] == 'wsrep_evs_repl_latency'
         metrics.each do |category, var_mapping|
           if var_mapping.key?(row['Variable_name'])
             if row['Variable_name'] == 'wsrep_evs_repl_latency'
