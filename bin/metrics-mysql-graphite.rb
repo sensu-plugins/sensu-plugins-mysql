@@ -42,6 +42,7 @@ require 'mysql'
 require 'socket'
 require 'inifile'
 require 'ipaddr'
+require 'ipaddress'
 
 class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
   option :host,
