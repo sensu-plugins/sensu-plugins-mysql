@@ -292,10 +292,9 @@ class MysqlGraphite < Sensu::Plugin::Metric::CLI::Graphite
       end
 
       results.each_hash do |row|
-        # special handling for wsrep_evs_repl_latency as this contains forward slash delimited data
-        fix_and_output_evs_repl_latency_data(row) if row['Variable_name'] == 'wsrep_evs_repl_latency'
         metrics.each do |category, var_mapping|
           if var_mapping.key?(row['Variable_name'])
+            # special handling for wsrep_evs_repl_latency as this contains forward slash delimited data
             if row['Variable_name'] == 'wsrep_evs_repl_latency'
               fix_and_output_evs_repl_latency_data(row, mysql_shorthostname, category)
             else
