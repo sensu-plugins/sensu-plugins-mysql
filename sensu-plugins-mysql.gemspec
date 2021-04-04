@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
   s.version                = SensuPluginsMySql::Version::VER_STRING
 
   s.add_runtime_dependency 'inifile', '3.0.0'
+  s.add_runtime_dependency 'ipaddress', '~> 0.8'
   s.add_runtime_dependency 'ruby-mysql', '~> 2.9'
   s.add_runtime_dependency 'sensu-plugin', '~> 4.0'
 
