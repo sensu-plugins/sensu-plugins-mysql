@@ -80,6 +80,11 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
          short: '-s SOCKET',
          long: '--socket SOCKET'
 
+  option :default_charset,
+         short: '-D',
+         long: '--default_charset=VALUE',
+         description: 'Provide custom charset for connection'
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -92,7 +97,11 @@ class CheckMySQL < Sensu::Plugin::Check::CLI
     end
 
     begin
-      db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+      db = Mysql.init
+      if config[:default_charset]
+        db.options Mysql::SET_CHARSET_NAME, config[:default_charset]
+      end
+      db.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
       info = db.get_server_info
       ok "Server version: #{info}"
     rescue Mysql::Error => e

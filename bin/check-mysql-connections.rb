@@ -73,6 +73,11 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
          long: '--percentage',
          default: false
 
+  option :default_charset,
+         short: '-D',
+         long: '--default_charset=VALUE',
+         description: 'Provide custom charset for connection'
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -83,7 +88,11 @@ class CheckMySQLHealth < Sensu::Plugin::Check::CLI
       db_user = config[:user]
       db_pass = config[:password]
     end
-    db = Mysql.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
+    db = Mysql.init
+    if config[:default_charset]
+      db.options Mysql::SET_CHARSET_NAME, config[:default_charset]
+    end
+    db.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
     max_con = db
               .query("SHOW VARIABLES LIKE 'max_connections'")
               .fetch_hash

@@ -80,6 +80,11 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
          description: 'Query to execute',
          required: true
 
+  option :default_charset,
+         short: '-D',
+         long: '--default_charset=VALUE',
+         description: 'Provide custom charset for connection'
+
   def run
     if config[:ini]
       ini = IniFile.load(config[:ini])
@@ -94,7 +99,11 @@ class MysqlSelectCountCheck < Sensu::Plugin::Check::CLI
     end
     raise 'Please specify hostname using -h or in mysql.cnf file' unless config[:host]
 
-    db = Mysql.real_connect(config[:host], db_user, db_pass, config[:database], config[:port], config[:socket])
+    db = Mysql.init
+    if config[:default_charset]
+      db.options Mysql::SET_CHARSET_NAME, config[:default_charset]
+    end
+    db.real_connect(config[:hostname], db_user, db_pass, config[:database], config[:port].to_i, config[:socket])
 
     count = db.query(config[:query]).fetch_row[0].to_i
     if count >= config[:crit]
