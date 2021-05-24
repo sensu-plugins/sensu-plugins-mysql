@@ -69,6 +69,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          long: '--master-connection=VALUE',
          description: 'Replication master connection name'
 
+  option :default_charset,
+         short: '-D',
+         long: '--default_charset=VALUE',
+         description: 'Provide custom charset for connection'
+
   option :ini,
          short: '-i',
          long: '--ini VALUE',
@@ -131,7 +136,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     end
 
     begin
-      db = Mysql.new(db_host, db_user, db_pass, nil, config[:port], config[:socket])
+      db = Mysql.init
+      if config[:default_charset]
+        db.options Mysql::SET_CHARSET_NAME, config[:default_charset]
+      end
+      db.real_connect(db_host, db_user, db_pass, nil, config[:port], config[:socket])
 
       results = if db_conn.nil?
                   db.query 'SHOW SLAVE STATUS'

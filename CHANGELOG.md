@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- Option to define default charset in following scripts:
+    - `check-mysql-alive.rb`
+    - `check-mysql-connections.rb`
+    - `check-mysql-replication-status.rb`
+    - `check-mysql-select-count.rb`
 
 ## [3.2.0] - 2020-08-26
 ### Changed
