@@ -18,6 +18,7 @@
  * bin/check-mysql-threads.rb
  * bin/check-mysql-query-result-count.rb
  * bin/check-mysql-select-count.rb
+ * bin/check-mysql-select-value.rb
  * bin/check-mysql-msr-replication-status.rb
  * bin/metrics-mysql-graphite.rb
  * bin/metrics-mysql-multiple-select-count.rb
@@ -95,6 +96,11 @@ $ /opt/sensu/embedded/bin/check-mysql-replication-status.rb --host=<SLAVE> --ini
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-select-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 30000 --critical 50000 --query 'SELECT count(*) FROM table t'
 ```
 
+**check-mysql-select-value** example
+```bash
+/opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby check-mysql-select-value.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --warning 1 --critical 2 --query 'SELECT MyStoredFunction()'
+```
+
 **metrics-mysql-query-result-count** example
 ```bash
 /opt/sensu/embedded/bin$ /opt/sensu/embedded/bin/ruby metrics-mysql-query-result-count.rb --host=localhost --port=3306 --user=collectd --pass=tflypass --socket=/data/mysql.sock --query 'SELECT DISTINCT(t.id) FROM table t where t.failed = true'
@@ -121,6 +127,7 @@ In keeping with the principle of least privilege you should create a new user wi
 | check-mysql-innodb-lock.rb             | `PROCESS`                                                 |
 | check-mysql-query-result-count.rb      | depends on query                                          |
 | check-mysql-select-count.rb            | `SELECT`                                                  |
+| check-mysql-select-value.rb            | `SELECT`                                                  |
 | check-mysql-replication-status.rb      | `SUPER` OR `REPLICATION_CLIENT` (the latter is preferable)|
 | check-mysql-msr-replication-status.rb  | `SELECT`                                                  |
 | check-mysql-status.rb                  | `SELECT`                                                  |
