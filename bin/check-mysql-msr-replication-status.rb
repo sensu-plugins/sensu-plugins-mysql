@@ -124,11 +124,12 @@ class CheckMysqlMSRReplicationStatus < Sensu::Plugin::Check::CLI
           message += ", Slave_SQL_Running=#{sql_thread_status}"
           message += ", Seconds_Behind_Master=#{seconds_behind_master}"
 
-          if status == 0
+          case status
+          when 0
             ok_statuses << message
-          elsif status == 1
+          when 1
             warn_statuses << message
-          elsif status == 2
+          when 2
             crit_statuses << message
           else
             puts 'Undefined status.'

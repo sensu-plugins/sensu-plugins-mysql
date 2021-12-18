@@ -160,7 +160,7 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
 
   # Metrics hash
   def metrics_hash
-    metrics = {
+    {
       'general' => {
         'Bytes_received' => 'rxBytes',
         'Bytes_sent' => 'txBytes',
@@ -269,7 +269,6 @@ class MetricsMySQLRaw < Sensu::Plugin::Metric::CLI::Graphite
         'Max_prepared_stmt_count' => 'MaxPreparedStmtCount'
       }
     }
-    metrics
   end
 
   # Credentials
